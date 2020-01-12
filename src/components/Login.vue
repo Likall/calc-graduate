@@ -11,18 +11,47 @@
 					<div class="rightContainer">
 						<div class="loginBox">
 							<h3>登录/LOGIN</h3>
-							<input placeholder="username" v-model="userName" value="username"/>
-							<transition name="fade">
-								<i class="iconfont icon-shanchu username-icon" v-if="isShowUnameIcon"/>
-							</transition>
-							<input placeholder="password" v-model="password" value="password"/>
-							<i class="iconfont icon-shanchu password-icon" v-if="isShowPswIcon"/>
-							<a-radio-group v-model="value" @change="handleRadioChange">
-								<a-radio :style="radioStyle" :value="1">学生</a-radio>
-								<a-radio :style="radioStyle" :value="2">教师</a-radio>
-								<a-radio :style="radioStyle" :value="3">管理员</a-radio>
-							</a-radio-group>
-							<a-button @click="login">登录</a-button>
+							<a-form :form="loginForm">
+								<a-form-item>
+									<a-input placeholder="username"
+										v-decorator="
+											['username', 
+												{ rules: [{ required: true, message: '请输入用户名' }] 
+										}]"
+										@change="handleUserNameChange"/>
+								</a-form-item>
+								<transition name="fade">
+									<i class="iconfont icon-shanchu username-icon" 
+										v-if="isShowUnameIcon"
+										@click="clearInput('0')"/>
+								</transition>
+								<a-form-item>
+									<a-input placeholder="password"
+										v-decorator="
+											['psw', 
+												{ rules: [{ required: true, message: '请输入密码' }] 
+										}]"
+										@change="handlePswChange"/>
+								</a-form-item>
+								<i class="iconfont icon-shanchu password-icon" 
+									v-if="isShowPswIcon"
+									@click="clearInput('1')"/>
+								<a-form-item>
+									<a-radio-group 
+										@change="handleRadioChange"
+										v-decorator="['type', 
+												{ rules: [{ required: true, message: '请选择登录角色' }] 
+										}]">
+										<a-radio :style="radioStyle" :value="1">学生</a-radio>
+										<a-radio :style="radioStyle" :value="2">教师</a-radio>
+										<a-radio :style="radioStyle" :value="3">管理员</a-radio>
+									</a-radio-group>
+								</a-form-item>
+								<a-form-item>
+									<a-button @click="login">登录</a-button>
+								</a-form-item>
+							</a-form>
+
 						</div>
 					</div>
 				</div>
@@ -35,33 +64,16 @@ export default {
 	name: 'Login',
 	data(){
 		return {
-			isShowUnameIcon: false,      // 是否显示用户名删除图标
-			isShowPswIcon: false,        // 是否显示密码删除图标
-			userName: '',				 // 用户名
-			password: '',				 // 密码
-			value: '',                   // 单选框当前选中
+			loginForm: this.$form.createForm(this, { name: 'login' }),				 // 表单
+			isShowUnameIcon: false,      											// 是否显示用户名删除图标
+			isShowPswIcon: false,        											// 是否显示密码删除图标
+			value: '',                   											// 单选框当前选中
 			radioStyle: {
 				display: 'block',
 				height: '45px',
 				lineHeight: '45px',
 				marginTop: '15px',
 			},
-		}
-	},
-	watch:{
-		userName(New, Old){
-			if(New !== '' && New !== null && typeof New !== 'undefined'){
-				this.isShowUnameIcon = true;
-			}else{
-				this.isShowUnameIcon = false;
-			}
-		},
-		password(New, Old){
-			if(New !== '' && New !== null && typeof New !== 'undefined'){
-				this.isShowPswIcon = true;
-			}else{
-				this.isShowPswIcon = false;
-			}
 		}
 	},
 	methods:{
@@ -75,7 +87,75 @@ export default {
 			this.value = e.target.value
 		},
 
-		login(){
+		/**
+        * Introduction 用户名输入值改变--清除键显示与否
+        * @author 刘莉
+        * @since 1.0
+        *
+        */
+		handleUserNameChange(e){
+			// 有值
+			if(e.target.value !== '' && e.target.value !== null && typeof e.target.value !== 'undefined'){
+				this.isShowUnameIcon = true;
+			}else{
+				this.isShowUnameIcon = false;
+			}
+		},
+		/**
+        * Introduction 清除事件
+        * @author 刘莉
+        * @since 1.0
+        *
+        */
+		clearInput(type){
+			// 清除用户名
+			if(type === '0'){
+				this.loginForm.setFieldsValue({
+					username: ''
+				})
+				// 隐藏清除按钮
+				this.isShowUnameIcon = false;
+			}
+			// 清除密码
+			else{
+				this.loginForm.setFieldsValue({
+					psw: ''
+				})
+				this.isShowPswIcon = false;
+			}
+		},
+		
+		/**
+        * Introduction 密码输入框值改变-清除键显示与否
+        * @author 刘莉
+        * @since 1.0
+        *
+        */
+		handlePswChange(e){
+			// 有值
+			if(e.target.value !== '' && e.target.value !== null && typeof e.target.value !== 'undefined'){
+				this.isShowPswIcon = true;
+			}else{
+				this.isShowPswIcon = false;
+			}
+		},
+
+		/**
+        * Introduction 登录
+        * @author 刘莉
+        * @since 1.0
+        *
+        */
+		login(e){
+			let self = this
+			e.preventDefault();
+			self.loginForm.validateFieldsAndScroll((error, values) => {
+				if (!error) {
+					this.$router.replace({
+						name: 'index'
+					})
+				}
+			})
 			
 		}
 	}
@@ -95,7 +175,7 @@ export default {
 		}
 		.ant-layout{
 			width: 54%;
-			height: 360px;
+			height: 410px;
 			position: absolute;
 			left: 50%;
 			top: 50%;
@@ -133,7 +213,7 @@ export default {
 					position: absolute;
 					top: 50%;
 					left: 50%;
-					margin-top: -30%;
+					margin-top: -36%;
 					margin-left: -40%;
 
 					h3{
@@ -143,7 +223,7 @@ export default {
 					.icon-shanchu{
 						position: absolute;
 						left: 95%;
-						margin-top: -32px;
+						margin-top: -54px;
 						color: #6BBFDE;
 						cursor: pointer;
 					}
