@@ -5,9 +5,11 @@ import App from './App'
 import router from './router'
 import Antd from 'ant-design-vue'
 import echarts from "echarts"
+import store from '../store/store'
 import 'ant-design-vue/dist/antd.css';
 import './assets/iconfont/css/iconfont.css'
 import './public/css/style.css'
+import './public/css/overwrite.scss'
 Vue.config.productionTip = false
 Vue.use(Antd)
 Vue.prototype.$echarts = echarts;
@@ -15,6 +17,7 @@ Vue.prototype.$echarts = echarts;
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

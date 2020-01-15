@@ -1,0 +1,5 @@
+const SET_STUDENTGRADELIST = 'SET_STUDENTGRADELIST'         // 成绩列表
+
+export default {
+  SET_STUDENTGRADELIST
+}
