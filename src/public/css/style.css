@@ -1,26 +1,43 @@
 /* 设置图标大小 */
 .icon-twelve{
-  font-size: 8px;
+  	font-size: 12px;
+}
+
+.icon-fourteen{
+  	font-size: 14px;
 }
 
 .icon-sixteen{
-  font-size: 16px;
+  	font-size: 16px;
 }
 
 .icon-eighteen{
-  font-size: 18px;
+  	font-size: 18px;
 }
 
 .icon-twenty{
-  font-size: 18px;
+  	font-size: 20px;
+}
+
+.icon-thirdfour{
+  	font-size: 34px;
 }
 
 /* 字体颜色 */
 .fontWhite{
-  color: rgba(255, 255, 255, 0.8);
+  	color: rgba(255, 255, 255, 0.8);
+}
+
+.fontBlue{
+  	color: #1890FF;
 }
 
 /* 边框色 */
 .borderGray{
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* 边距 */
+.paddingRigTwenty{
+  	padding-right: 20px;
 }
