@@ -1,7 +1,9 @@
 <template>
     <div class="indexContainer">
 		<!-- 头部 -->
-		<index-header></index-header>
+		<index-header
+			@activeKey="setActiveKey">
+		</index-header>
 		<!-- 左侧边栏 -->
 		<left-bar
 			@activeKey="setActiveKey"></left-bar>
@@ -9,7 +11,8 @@
 		<tab-title
 			:tabs="tabs"
 			:activeKey="activeKey"
-			@activeKey="setActiveKey">
+			@activeKey="setActiveKey"
+			>
 		</tab-title>
 		<!-- 详情 -->
 		<guide-detail
@@ -68,6 +71,11 @@
 						name: '成绩统计',
 						component: 'GradeAnalysisDetail'
 					},
+					{
+						id: 8,
+						name: '个人中心',
+						component: 'UserIndex'
+					}
 					
 				],
 				activeKey: '',						// 击中项key

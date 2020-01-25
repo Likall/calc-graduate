@@ -23,7 +23,7 @@ const actions = {
 
 const mutations = {
     [types.SET_STUDENTGRADELIST](state, value) {
-        state.studentGradeLists = value
+        state.studentGradeList = value
 	},
 }
 

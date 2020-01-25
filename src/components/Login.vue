@@ -3,6 +3,7 @@
 		<div class="loginBg"></div>
 		<a-layout>
 			<a-layout-content>
+				<a-spin :spinning="spinning">
 				<div class="loginContent">
 					<div class="leftLogoCon">
 						<div class="logo"></div>
@@ -37,29 +38,21 @@
 									v-if="isShowPswIcon"
 									@click="clearInput('1')"/>
 								<a-form-item>
-									<a-radio-group 
-										@change="handleRadioChange"
-										v-decorator="['type', 
-												{ rules: [{ required: true, message: '请选择登录角色' }] 
-										}]">
-										<a-radio :style="radioStyle" :value="1">学生</a-radio>
-										<a-radio :style="radioStyle" :value="2">教师</a-radio>
-										<a-radio :style="radioStyle" :value="3">管理员</a-radio>
-									</a-radio-group>
-								</a-form-item>
-								<a-form-item>
 									<a-button @click="login">登录</a-button>
 								</a-form-item>
 							</a-form>
-
+							
 						</div>
 					</div>
 				</div>
+				</a-spin>
 			</a-layout-content>
 		</a-layout>
 	</div>
 </template>
 <script>
+import config from '@/api/config.js'
+import { mapGetters, mapActions } from 'vuex'
 export default {
 	name: 'Login',
 	data(){
@@ -68,15 +61,20 @@ export default {
 			isShowUnameIcon: false,      											// 是否显示用户名删除图标
 			isShowPswIcon: false,        											// 是否显示密码删除图标
 			value: '',                   											// 单选框当前选中
-			radioStyle: {
-				display: 'block',
-				height: '45px',
-				lineHeight: '45px',
-				marginTop: '15px',
-			},
+			spinning: false,														// loading状态
+			
 		}
 	},
+	computed: {
+		...mapGetters({
+			tabTitleItem: 'tabTitleItem',				// 顶部标题
+		})
+	},
 	methods:{
+		...mapActions({
+			setTabTitleItem: 'setTabTitleItem',			// 设置顶部标题
+			setDetailCurrentComponent: 'setDetailCurrentComponent',  // 设置详情加载的组件
+		}),
 		/**
         * Introduction 角色选择单选框事件
         * @author 刘莉
@@ -151,9 +149,37 @@ export default {
 			e.preventDefault();
 			self.loginForm.validateFieldsAndScroll((error, values) => {
 				if (!error) {
-					this.$router.replace({
-						name: 'index'
+					// 开启loading
+					self.spinning = true
+					let restData = {
+						"account": this.loginForm.getFieldValue('username'),
+						"userPassword": this.loginForm.getFieldValue('psw')
+					}
+					self.axios.post(config.LOGIN , restData).then(response => {
+						// 登录失败
+						if(response.data.code === '401'){
+							self.$message.error(response.data.msg)
+							// 关闭loading
+							self.spinning = false
+						}else if(response.data.code === '200'){
+							// 提示信息
+							self.$message.success(response.data.msg)
+							// 关闭loading
+							self.spinning = false
+							self.$cookies.set('username', response.data.userName, '2d')
+							self.$cookies.set('account', response.data.account, '2d')
+							self.$cookies.set('role', response.data.account, '2d')
+							self.$cookies.set('avatar', response.data.avatar, '2d')
+							// 重置
+							self.setTabTitleItem([])
+							self.setDetailCurrentComponent('')
+							// 页面自动跳转
+							self.$router.replace({
+								name: 'index'
+							})
+						}
 					})
+					
 				}
 			})
 			
@@ -290,5 +316,18 @@ export default {
 
 	.fade-enter, .fade-leave-to {
 		opacity: 0;
+	}
+
+	// loading样式
+	/deep/ .ant-spin-nested-loading{
+		height: 100%;
+	}
+	/deep/ .ant-spin-blur{
+		opacity: 0.9;
+		height: 100%;
+	}
+
+	/deep/ .ant-spin-container{
+		height: 100%;
 	}
 </style>

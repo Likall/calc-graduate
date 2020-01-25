@@ -1,11 +1,11 @@
 <template>
-	<div class="addFormWorkContainer">
+	<div class="searchContainer">
 		
 	</div>
 </template>
 <script>
 	export default {
-		name: 'AddFormWork'
+		name: 'Search'
 	}
 </script>
 <style lang="scss" scoped>

@@ -1,6 +1,7 @@
 <template>
 	<div class="guideDetailContainer"
-		:style="{'width': posTabWidth.width, 'left': posTabWidth.left}">
+		:style="{'width': posTabWidth.width, 'left': posTabWidth.left}"
+		>
 		<div class="content-wrap">
 			<keep-alive>
 				<component
@@ -14,12 +15,16 @@
 <script>
 	import StudentGrade from './student/StudentGrade'
 	import StudentAnalysis from './student/StudentAnalysis'
+	import UserIndex from './user/UserIndex'
+	import CourseDetail from './course/CourseDetail'
 	import { mapGetters, mapActions } from 'vuex'
 	export default {
 		name: 'GuideDetail',
 		components: {
 			StudentGrade,
-			StudentAnalysis
+			StudentAnalysis,
+			UserIndex,
+			CourseDetail
 		},
 		props: [
 			'tabs'
@@ -49,5 +54,11 @@
 		height: calc(100% - 100px);
 		box-sizing: border-box;
 		background-color: #f2f2f2;
+		overflow-x: hidden;
+		.content-wrap{
+			position: relative;
+			height: 100%;
+			width: 100%;
+		}
 	}
 </style>

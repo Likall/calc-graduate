@@ -37,6 +37,12 @@ const state = {
 
 	],
 	detailCurrentComponent: '',				// 详情加载的组件
+	courseColumns: [],						// 课程模板文件列
+	courseData: [],							// 课程模板文件数据
+	studentColumns: [],						// 学生模板文件列
+	studentData: [],						// 学生模板文件数据
+	relDemandAndCourseColumns: [],			// 课程指标点与课程模板文件列
+	relDemandAndCourseData: [],				// 课程指标点与课程模板文件数据
 }
 var getters = {
 	tabTitleItem: state => {
@@ -47,6 +53,24 @@ var getters = {
 	},
 	detailCurrentComponent: state => {
 		return state.detailCurrentComponent
+	},
+	courseColumns: state => {
+        return state.courseColumns
+	},
+	courseData: state => {
+        return state.courseData
+	},
+	studentColumns: state => {
+		return state.studentColumns
+	},
+	studentData: state => {
+        return state.studentData
+	},
+	relDemandAndCourseColumns: state => {
+        return state.relDemandAndCourseColumns
+	},
+	relDemandAndCourseData: state => {
+		return state.relDemandAndCourseData
 	}
 }
 const actions = {
@@ -63,6 +87,48 @@ const actions = {
 		state
 	}, value) => {
 		commit(types.SET_DETAILCURRENTCOMPONENT, value)
+	},
+	// 课程模板文件列
+	setCourseColumns: ({
+        commit,
+        state
+    }, value) => {
+        commit(types.SET_COURSECOLUMNS, value)
+	},
+	// 课程模板文件数据
+	setCourseData: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_COURSEDATA, value)
+	},
+	// 课程学生信息模板文件列
+	setStudentColumns: ({
+        commit,
+        state
+    }, value) => {
+        commit(types.SET_STUDENTCOLUMNS, value)
+	},
+	// 课程学生文模板件数据
+	setStudentData: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_STUDENTDATA, value)
+	},
+	// 设置课程与指标点关系模板文件列
+	setRelDemandAndCourseColumns: ({
+        commit,
+        state
+    }, value) => {
+        commit(types.SET_RELDEMANDANDCOURSECOLUMNS, value)
+	},
+	// 设置课程与指标点关系模板文件数据
+	setRelDemandAndCourseData: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_RELDEMANDANDCOURSEDATA, value)
 	}
 }
 const mutations = {
@@ -71,6 +137,24 @@ const mutations = {
 	},
 	[types.SET_DETAILCURRENTCOMPONENT](state, value) {
 		state.detailCurrentComponent = value
+	},
+	[types.SET_COURSECOLUMNS](state, value) {
+        state.courseColumns = value
+	},
+	[types.SET_COURSEDATA](state, value) {
+		state.courseData = value
+	},
+	[types.SET_STUDENTCOLUMNS](state, value) {
+        state.studentColumns = value
+	},
+	[types.SET_STUDENTDATA](state, value) {
+		state.studentData = value
+	},
+	[types.SET_RELDEMANDANDCOURSECOLUMNS](state, value) {
+        state.relDemandAndCourseColumns = value
+	},
+	[types.SET_RELDEMANDANDCOURSEDATA](state, value) {
+		state.relDemandAndCourseData = value
 	}
 }
 // 导出
