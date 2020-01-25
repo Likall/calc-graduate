@@ -68,6 +68,9 @@
 				detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
 			})
 		},
+		mounted(){
+			console.log(this.$cookies.get('username'))
+		},
 		methods: {
 			...mapActions({
 				setTabTitleItem: 'setTabTitleItem',									// 设置顶部tab项

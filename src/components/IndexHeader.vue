@@ -26,7 +26,7 @@
 					</div>
 					<a-menu slot="overlay">
 						<a-menu-item>
-							<a href="javascript:;">个人中心</a>
+							<a href="javascript:;" @click="goUserIndex('8', '个人中心', 'UserIndex')">个人中心</a>
 						</a-menu-item>
 						<a-menu-item>
 							<a href="javascript:;" class="logout">
@@ -41,8 +41,8 @@
 	</div>
 </template>
 <script>
-	import {mapGetters, mapActions} from 'vuex'
 	import tools from '@/public/tools/tools'
+import { mapGetters, mapActions } from 'vuex'
 	export default {
 		name: 'IndexHeader',
 		components: {
@@ -56,12 +56,16 @@
 		},
 		computed:{
 			...mapGetters({
-				collapsed: 'header/collapsed',						// menu 折叠
+				collapsed: 'header/collapsed',										// menu 折叠
+				tabTitleItem: 'tabTitleItem',										// 顶部tab项
+				detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
 			})
 		},
 		methods: {
 			...mapActions({
-				setCollapsed: 'header/setCollapsed',				// 设置menu 是否折叠
+				setCollapsed: 'header/setCollapsed',								// 设置menu 是否折叠
+				setTabTitleItem: 'setTabTitleItem',									// 设置顶部tab项
+				setDetailCurrentComponent: 'setDetailCurrentComponent',				// 设置当前详情加载的组件
 			}),
 			/**
 			* Introduction 改变下拉/折叠按钮
@@ -89,6 +93,42 @@
 				// 设置menu是否折叠
 				let collapsed = tools.deepClone(this.collapsed)
 				this.setCollapsed(!collapsed)
+			},
+
+			/**
+			* Introduction 跳转个人中心
+			* @author 刘莉
+			* @since 1.0
+			* @param {key} key值 
+			* @param {desc} 折叠菜单下的子项名称
+			*/
+			goUserIndex(key, desc, com){
+				let tempTabArr = tools.deepClone(this.tabTitleItem)
+				// 是否存在
+				let exsist = tempTabArr.filter(item => {
+					return item.key === key
+				})
+				// 存在不向数组中插入数据
+				if(exsist.length !== 0){
+					this.$emit('activeKey', key+'')
+					return
+				}else{
+					let newArrayTemp = {
+						key: key,
+						datas: {
+							icon: '',
+							title: desc,
+							key: key,
+							component: com
+						}
+					}
+					// 插入数据
+					let newTabArr = tools.deepClone(this.tabTitleItem)
+					newTabArr.push(newArrayTemp)
+					this.setTabTitleItem(newTabArr)
+					this.setDetailCurrentComponent(com)
+					this.$emit('activeKey', key+'')
+				}
 			}
 		}
 	}
