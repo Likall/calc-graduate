@@ -25,6 +25,7 @@
 	import LeftBar from './LeftBar'
 	import TabTitle from './TabTitle'
 	import GuideDetail from './detail/GuideDetail'
+	import { mapGetters, mapActions } from 'vuex'
 	export default {
 		name: 'Index',
 		components: {
@@ -49,12 +50,12 @@
 					{
 						id: 3,
 						name: '指标点与课程关系',
-						component: 'RelationDetail'
+						component: 'RelDemandAndCourseDetail'
 					},
 					{
 						id: 4,
 						name: '达成度',
-						component: 'ReachingDetail'
+						component: 'AchevementDetail'
 					},
 					{
 						id: 5,
@@ -64,12 +65,12 @@
 					{
 						id: 6,
 						name: '成绩',
-						component: 'GradeDetail'
+						component: 'StudentGrade'
 					},
 					{
 						id: 7,
 						name: '成绩统计',
-						component: 'GradeAnalysisDetail'
+						component: 'StudentAnalysis'
 					},
 					{
 						id: 8,
@@ -79,9 +80,37 @@
 					
 				],
 				activeKey: '',						// 击中项key
+				hasLogin: false,					// 是否登录
+				
+			}
+		},
+		computed:{
+			...mapGetters({
+				currentUser: 'currentUser',			// 当前登录用户信息
+			})
+		},
+		mounted(){
+			if (this.$cookie.get('username') == '' || typeof this.$cookie.get('username') == 'undefined' || this.$cookie.get('username') == null)
+			{
+				this.hasLogin = false;
+				this.$router.replace({
+					name: 'Login'
+				})
+			}
+		},
+		watch:{
+			currentUser(New, Old){
+				if(New && New.length === 0){
+					this.$router.replace({
+						name: 'Login'
+					})
+				}
 			}
 		},
 		methods: {
+			...mapActions({
+				setCurrentUser: 'setCurrentUser',			// 设置当前登录用户信息
+			}),
 			// 设置当前左侧边栏，顶部tab切换击中key
 			setActiveKey(key){
 				this.activeKey = key

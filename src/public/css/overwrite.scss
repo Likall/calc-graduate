@@ -1,4 +1,8 @@
 /* 重写下拉框样式 */
+/deep/ .ant-dropdown{
+	min-width: 100px !important;
+	width: 100px !important;
+}
 .ant-dropdown-menu-item{
 	.logout{
 		color: red;

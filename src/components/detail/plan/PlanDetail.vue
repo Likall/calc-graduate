@@ -1,11 +1,9 @@
 <template>
-	<div class="searchContainer">
-		
-	</div>
+	
 </template>
 <script>
 	export default {
-		name: 'Search'
+		name: 'PlanDetail'
 	}
 </script>
 <style lang="scss" scoped>

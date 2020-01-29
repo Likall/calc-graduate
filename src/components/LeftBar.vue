@@ -1,50 +1,100 @@
 <template>
 	<div class="leftBarContainer"
 		:class="collapsed === false ? 'collapsed' : 'notcollapsed'">
-		<a-menu
-			mode="inline"
-			theme="dark"
-			:inlineCollapsed="collapsed">
-			<a-sub-menu key="sub1">
-				<span slot="title"><i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" /><span>学生</span></span>
-				<a-menu-item key="6"
-					@click="handleMenuChange('6', '0', '成绩', 'StudentGrade')">
-					<span class="sub-title">
-						成绩
-					</span>
-				</a-menu-item>
-				<a-menu-item key="7"
-					@click="handleMenuChange('7', '0', '成绩统计', 'StudentAnalysis')">
-					<span class="sub-title">
-						成绩统计
-					</span>
-				</a-menu-item>
-			</a-sub-menu>
-			<a-menu-item 
-				v-for="(item, index) in leftBarList" 
-				:key="item.key"
-				@click="handleMenuChange(item.key, '1')"
-				>
-				<i class="iconfont paddingRigTwenty icon-eighteen" :class="item.icon"></i>
-				<span>{{item.title}}</span>
-			</a-menu-item>
-			<!-- <a-sub-menu key="sub1">
-				<span slot="title"><a-icon type="mail" /><span>Navigation One</span></span>
-				<a-menu-item key="5">Option 5</a-menu-item>
-				<a-menu-item key="6">Option 6</a-menu-item>
-				<a-menu-item key="7">Option 7</a-menu-item>
-				<a-menu-item key="8">Option 8</a-menu-item>
-			</a-sub-menu>
-			<a-sub-menu key="sub2">
-				<span slot="title"><a-icon type="appstore" /><span>Navigation Two</span></span>
-				<a-menu-item key="9">Option 9</a-menu-item>
-				<a-menu-item key="10">Option 10</a-menu-item>
-				<a-sub-menu key="sub3" title="Submenu">
-				<a-menu-item key="11">Option 11</a-menu-item>
-				<a-menu-item key="12">Option 12</a-menu-item>
+		<!-- menu 教师与学生 -->
+		<div v-if="currentUser[0].role === '2' || currentUser[0].role === '3'" class="leftBarBox">
+			<a-menu
+				mode="inline"
+				theme="dark"
+				:inlineCollapsed="collapsed">
+				<a-sub-menu key="sub1">
+					<span slot="title"><i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" /><span>学生</span></span>
+					<a-menu-item key="6"
+						@click="handleMenuChange('6', '0', '成绩', 'StudentGrade', '')">
+						<span class="sub-title">
+							成绩
+						</span>
+					</a-menu-item>
+					<a-menu-item key="7"
+						@click="handleMenuChange('7', '0', '成绩统计', 'StudentAnalysis', '')">
+						<span class="sub-title">
+							成绩统计
+						</span>
+					</a-menu-item>
 				</a-sub-menu>
-			</a-sub-menu> -->
-		</a-menu>
+				<a-menu-item 
+					v-for="(item, index) in leftBarList" 
+					:key="item.key"
+					@click="handleMenuChange(item.key, '1')"
+					>
+					<i class="iconfont paddingRigTwenty icon-eighteen" :class="item.icon"></i>
+					<span>{{item.title}}</span>
+				</a-menu-item>
+			</a-menu>
+		</div>
+		<!-- 管理员 -->
+		<div v-if="currentUser[0].role === '1'" class="leftBarBox">
+			<a-menu
+				mode="inline"
+				theme="dark"
+				:inlineCollapsed="collapsed">
+				<a-sub-menu key="sub1">
+					<span slot="title">
+						<i class="iconfont icon-renyuanguanli paddingRigTwenty icon-eighteen" />
+						<span>人员管理</span>
+					</span>
+					<a-sub-menu key="sub1-1" >
+						<span slot="title">
+							<i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" />
+							<span class="sub-title">学生</span>
+						</span>
+						<a-menu-item key="8">
+							<span class="sub-title">学生列表</span>
+						</a-menu-item>
+						<a-menu-item key="9">
+							<span class="sub-title">学生删除</span>
+						</a-menu-item>
+					</a-sub-menu>
+					<a-sub-menu key="sub1-2" >
+						<span slot="title">
+							<i class="iconfont icon-jiaoshi paddingRigTwenty icon-eighteen" />
+							<span>教师</span>
+						</span>
+						<a-menu-item key="10">
+							<span class="sub-title">教师列表</span>
+						</a-menu-item>
+						<a-menu-item key="11">
+							<span class="sub-title">教师删除</span>
+						</a-menu-item>
+					</a-sub-menu>
+					<a-menu-item key="12">
+						<i class="iconfont icon-tongji paddingRigTwenty icon-eighteen" />
+						统计页面
+					</a-menu-item>
+				</a-sub-menu>
+				<a-menu-item key="1"
+					@click="handleMenuChange('6', '0', '学生', 'StudentGrade', 'icon-xuesheng')">
+					<span class="title">
+						<i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" />
+						学生
+					</span>
+				</a-menu-item>
+				<a-menu-item key="2"
+					@click="handleMenuChange('1', '0', '课程', 'CourseDetail', 'icon-kecheng')">
+					<span class="title">
+						<i class="iconfont icon-kecheng paddingRigTwenty icon-eighteen" />
+						课程
+					</span>
+				</a-menu-item>
+				<a-menu-item key="3"
+					@click="handleMenuChange('3', '0', '指标点与课程关系', 'RelDemandAndCourseDetail', 'icon-guanxi')">
+					<span class="title">
+						<i class="iconfont icon-guanxi paddingRigTwenty icon-eighteen" />
+						指标点与课程关系
+					</span>
+				</a-menu-item>
+			</a-menu>
+		</div>
 	</div>
 </template>
 <script>
@@ -66,10 +116,11 @@
 				tabTitleItem: 'tabTitleItem',										// 顶部tab项
 				leftBarList: 'leftBarList',											// 左侧边栏栏项
 				detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
+				currentUser: 'currentUser',				 // 当前登录用户信息
 			})
 		},
 		mounted(){
-			console.log(this.$cookies.get('username'))
+			console.log(this.$cookie.get('username'))
 		},
 		methods: {
 			...mapActions({
@@ -84,8 +135,10 @@
 			* @param {key} key值 
 			* @param {type} 0 - 折叠菜单下子项，1-非折叠菜单
 			* @param {desc} 折叠菜单下的子项名称
+			* @param {com} 当前组件名称
+			* @param {icon} 当前列表图标
 			*/
-			handleMenuChange(key, type, desc, com){
+			handleMenuChange(key, type, desc, com, icon){
 				let tempTabArr = tools.deepClone(this.tabTitleItem)
 				// 是否存在
 				let exsist = tempTabArr.filter(item => {
@@ -101,7 +154,7 @@
 						let newArrayTemp = {
 							key: key,
 							datas: {
-								icon: '',
+								icon: icon,
 								title: desc,
 								key: key,
 								component: com
@@ -135,6 +188,10 @@
 		height: calc(100% - 60px);
 		position: fixed;
 		top: 60px;
+
+		.leftBarBox{
+			height: 100%;
+		}
 
 		.ant-menu{
 			width: 100%;

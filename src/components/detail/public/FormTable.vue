@@ -3,12 +3,12 @@
 	
 		
       <Table 
-			:columns="columns8" 
-			:data="data7"
-			size="small" 
-			ref="table" 
-			:show-header="false"
-			:border="true">
+				:columns="columns8" 
+				:data="data7"
+				size="small" 
+				ref="table" 
+				:show-header="false"
+				:border="true">
 		</Table>
     </div>
 </template>

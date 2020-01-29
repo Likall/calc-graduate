@@ -1,4 +1,4 @@
-import types from 'student_type'
+import types from './student_type'
 
 const state = {
     studentGradeList: [],				// 学生成绩信息

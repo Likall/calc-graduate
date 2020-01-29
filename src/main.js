@@ -13,7 +13,7 @@ import 'jquery'
 import 'view-design/dist/styles/iview.css';
 import 'ant-design-vue/dist/antd.css';
 import './assets/iconfont/css/iconfont.css'
-import './public/css/style.css'
+import './public/css/style.scss'
 import './public/css/overwrite.scss'
 Vue.config.productionTip = false
 Vue.use(Antd)
