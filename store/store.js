@@ -5,12 +5,14 @@ import createPersistedState from 'vuex-persistedstate';
 import index from './index'
 import header from './modules/header'
 import formwork from './modules/formwork'
+import student from './modules/student'
 Vue.use(Vuex)
 export default new Vuex.Store({
 	modules: {
 		index,
 		header,
-		formwork
+		formwork,
+		student
 	},
 	plugins: [createPersistedState({
 		storage: window.localstorage,

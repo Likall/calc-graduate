@@ -74,6 +74,7 @@ export default {
 		...mapActions({
 			setTabTitleItem: 'setTabTitleItem',			// 设置顶部标题
 			setDetailCurrentComponent: 'setDetailCurrentComponent',  // 设置详情加载的组件
+			setCurrentUser: 'setCurrentUser',			// 设置当前登录用户信息
 		}),
 		/**
         * Introduction 角色选择单选框事件
@@ -166,13 +167,27 @@ export default {
 							self.$message.success(response.data.msg)
 							// 关闭loading
 							self.spinning = false
-							self.$cookies.set('username', response.data.userName, '2d')
-							self.$cookies.set('account', response.data.account, '2d')
-							self.$cookies.set('role', response.data.account, '2d')
-							self.$cookies.set('avatar', response.data.avatar, '2d')
+							// 登录成功存cookie
+							self.$cookie.set('username', response.data.data.userName, '2d')
+							self.$cookie.set('account', response.data.data.account, '2d')
+							self.$cookie.set('role', response.data.data.role, '2d')
+							self.$cookie.set('avatar', response.data.data.avatar, '2d')
 							// 重置
 							self.setTabTitleItem([])
 							self.setDetailCurrentComponent('')
+							// 设置登录信息
+							let userName = this.$cookie.get('username');
+							let role = this.$cookie.get('role')
+							let avatar = this.$cookie.get('avatar')
+							let account = this.$cookie.get('account')
+							let user = []
+							user.push({
+								userName: userName,
+								role: role,
+								avatar: avatar,
+								account: account
+							})
+							this.setCurrentUser(user)
 							// 页面自动跳转
 							self.$router.replace({
 								name: 'index'

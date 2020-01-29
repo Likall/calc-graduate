@@ -17,6 +17,12 @@ const state = {
 	],
 	studentCourseColums: [
 		
+	],
+	relDemandCourse: [
+		'一级毕业要求',
+		'二级毕业要求',
+		'课程ID',
+		'权重值'
 	]
 }
 var getters = {
@@ -26,6 +32,9 @@ var getters = {
 	studentCourse: state => {
 		return state.studentCourse
 	},
+	relDemandCourse: state => {
+		return state.relDemandCourse
+	}
 }
 
 export default {

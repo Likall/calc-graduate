@@ -56,7 +56,6 @@
 			},
 			// tab切换事件
 			handleChangeTabs(key){
-				console.log(typeof key)
 				// 设置当前击中key
 				this.$emit('activeKey', key+'')
 				for(let i = 0; i < this.tabTitleItem.length; i++){

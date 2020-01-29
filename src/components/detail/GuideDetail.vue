@@ -17,6 +17,10 @@
 	import StudentAnalysis from './student/StudentAnalysis'
 	import UserIndex from './user/UserIndex'
 	import CourseDetail from './course/CourseDetail'
+	import RelDemandAndCourseDetail from '@/components/detail/reldemandcourse/RelDemandAndCourseDetail'
+	import DemandDetail from '@/components/detail/demand/DemandDetail.vue'
+	import AchevementDetail from '@/components/detail/achevement/AchevementDetail.vue'
+	import PlanDetail from '@/components/detail/plan/PlanDetail.vue'
 	import { mapGetters, mapActions } from 'vuex'
 	export default {
 		name: 'GuideDetail',
@@ -24,7 +28,11 @@
 			StudentGrade,
 			StudentAnalysis,
 			UserIndex,
-			CourseDetail
+			CourseDetail,
+			RelDemandAndCourseDetail,
+			DemandDetail,
+			AchevementDetail,
+			PlanDetail
 		},
 		props: [
 			'tabs'

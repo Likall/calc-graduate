@@ -19,14 +19,14 @@ const state = {
 			title: '指标点与课程关系',
 			key: '3',
 			icon: 'icon-guanxi',
-			component: 'RelationDetail'
+			component: 'RelDemandAndCourseDetail'
 		},
 		
 		{
 			title: '达成度',
 			key: '4',
 			icon: 'icon-tongji',
-			component: 'ReachingDetail'
+			component: 'AchevementDetail'
 		},
 		{
 			title: '专业计划',
@@ -38,11 +38,12 @@ const state = {
 	],
 	detailCurrentComponent: '',				// 详情加载的组件
 	courseColumns: [],						// 课程模板文件列
-	courseData: [],							// 课程模板文件数据
+	courseData: [],								// 课程模板文件数据
 	studentColumns: [],						// 学生模板文件列
-	studentData: [],						// 学生模板文件数据
+	studentData: [],							// 学生模板文件数据
 	relDemandAndCourseColumns: [],			// 课程指标点与课程模板文件列
 	relDemandAndCourseData: [],				// 课程指标点与课程模板文件数据
+	currentUser: [],							// 登录用户信息
 }
 var getters = {
 	tabTitleItem: state => {
@@ -71,6 +72,9 @@ var getters = {
 	},
 	relDemandAndCourseData: state => {
 		return state.relDemandAndCourseData
+	},
+	currentUser: state => {
+		return state.currentUser
 	}
 }
 const actions = {
@@ -129,6 +133,13 @@ const actions = {
 		state
 	}, value) => {
 		commit(types.SET_RELDEMANDANDCOURSEDATA, value)
+	},
+	// 设置当前登录用户信息
+	setCurrentUser: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_CURRENTUSER, value)
 	}
 }
 const mutations = {
@@ -155,7 +166,11 @@ const mutations = {
 	},
 	[types.SET_RELDEMANDANDCOURSEDATA](state, value) {
 		state.relDemandAndCourseData = value
-	}
+	},
+	[types.SET_CURRENTUSER](state, value) {
+		state.currentUser = value
+	},
+	
 }
 // 导出
 export default {

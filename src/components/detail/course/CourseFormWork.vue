@@ -41,9 +41,7 @@
 				size="small" 
 				ref="table" 
 				:show-header="false"
-				:border="true"
-				width="800"
-				>
+				:border="true">
 			</Table>
 			<br>
 		</div>
@@ -53,7 +51,7 @@
 	import { mapGetters, mapActions } from 'vuex';
 	import tools from '@/public/tools/tools'
 	export default {
-		name: 'FormWork',
+		name: 'CourseFormWork',
 		props: [
 		],
 		data(){
@@ -109,6 +107,7 @@
 			}
 		},
 		mounted() {
+			console.log("3434")
 			if(this.detailCurrentComponent === 'CourseDetail'){
 				this.formData = tools.deepClone(this.studentCourse)
 				this.formTitle = this.titleData[1]
@@ -268,7 +267,7 @@
 		margin-right: 10px;
     	position: relative;
 		top: 35px;
-		// left: 122px;
+		left: 160px;
 		box-sizing: border-box;
 		padding: 10px;
 
@@ -276,7 +275,7 @@
 			height: 40px;
 			position: absolute;
 			top: -33px;
-			// left: -150px;
+			left: -150px;
 		}
 
 		.adminTableContainer{
@@ -293,7 +292,7 @@
 		}
 		.tableContainer{
 			position: relative;
-			// left: -160px;
+			left: -160px;
 
 			.ivu-table-wrapper-with-border{
 				margin-top: 10px;

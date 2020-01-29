@@ -5,7 +5,7 @@
 				<div class="divider"></div>
 				<h3>个人中心</h3>
 				<div class="boxContainer">
-					<div class="rightContainer">
+					<div class="rightContainer" v-if="currentUser.length > 0">
 						<form
 							:form="userInfoForm">
 							<div class="formContainer">
@@ -24,7 +24,7 @@
 									>
 											<!-- <i class="iconfont icon-yonghu" style="font-size:30px;"/> -->
 										<i 
-											v-if="avatarSource ==='' || avatarSource === null"
+											v-if="avatarSource ==='' || avatarSource === null || avatarSource === 'null' || typeof avatarSource === 'undefined'"
 											class="iconfont icon-yonghu" 
 											style="font-size:30px;"></i>
 										<img v-else :src="avatarSource" alt="avatar">
@@ -44,25 +44,19 @@
 									<span class="unable-font">当前角色不可更改为其它角色</span>
 								</a-form-item>
 								<a-form-item>
-									<span class="formTitle formItem">学号</span>
-						
+									<!-- 管理员 -->
+									<span class="formTitle formItem" v-if="selectIndex === 0">账号</span>
+									<!-- 教师 -->
+									<span class="formTitle formItem" v-if="selectIndex === 1">工号</span>
+									<!-- 学生 -->
+									<span class="formTitle formItem" v-if="selectIndex === 2">学号</span>
 									<a-input readonly :value="userId"/>
 									<span class="unable-font">当前角色不可修改</span>
 								</a-form-item>
 								<a-form-item>
 									<span class="formTitle formItem">昵称</span>
-									<a-input :value="userName"/>
+									<a-input :value="userName" @change="handleUserNameChange"/>
 								</a-form-item>
-								<!-- <a-form-item>
-									<span class="formTitle formItem">性别</span>
-									<a-radio-group name="radioGroup" 
-										v-decorator="['gender', 
-										]"
-										>
-										<a-radio :value="0">男</a-radio>
-										<a-radio :value="1">女</a-radio>
-									</a-radio-group>
-								</a-form-item> -->
 								<a-form-item class="btnBox">
 									<a-button @click="handleSaveUserInfo" type="primary">确认修改</a-button>
 								</a-form-item>
@@ -87,9 +81,9 @@
 				userInfoForm: this.$form.createForm(this, { name: 'userInfo' }),			// 表单	
 				selectIndex: 0,																// 下拉列表选中index
 				currentRole: '',															// 
-				selectItem: ['学生', '教师', '管理员'],										 // 下拉列表
+				selectItem: ['管理员', '教师', '学生'],									// 下拉列表
 				userId: '41603557',															// 用户id
-				userName: '',																// 昵称
+				userName: '',																	// 昵称
 				avatarSource: '',															// 用户头像
 			}
 		},
@@ -97,11 +91,24 @@
 				...mapGetters({
 					tabTitleItem: 'tabTitleItem',										// 顶部tab项
 					detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
+					currentUser: 'currentUser',										// 当前登录用户信息
 				})
 			},
 		mounted(){
-			// 设置当前角色
-			this.currentRole = this.selectItem[this.selectIndex]
+			// 当前用户存在
+			if(this.currentUser.length !== 0){
+				// 设置当前角色
+				this.currentRole = this.selectItem[parseInt(this.currentUser[0].role) -1]
+				// 设置下拉列表选中值
+				this.selectIndex = parseInt(this.currentUser[0].role) -1
+				// 设置头像
+				this.avatarSource = this.currentUser[0].avator
+				// 设置昵称
+				this.userName = this.currentUser[0].userName
+				// 登录账号
+				this.userId = this.currentUser[0].account
+			}
+			
 		},
 		methods: {
 			...mapActions({
@@ -121,10 +128,7 @@
 				if (info.file.status === 'done') {
 					this.$message.success(`${info.file.name} 上传成功`);
 					this.getBase64(info.file.originFileObj, avatarSource => {
-						console.log(typeof avatarSource)
 						self.avatarSource = tools.deepClone(avatarSource);
-						console.log(self.avatarSource)
-						// this.loading = false;
 					});
 				} else if (info.file.status === 'error') {
 				this.$message.error(`${info.file.name} 上传失败.`);
@@ -160,7 +164,18 @@
 				//获取选定的文件
 				let tFiles = e.target.files;
 				let len = tFiles.length;
-			}	
+			},
+			// 昵称更新事件
+			handleUserNameChange(e){
+				// 增加字符串
+				if (e.data !== '' && e.data !== null && e.data !== 'null') {
+					this.userName = this.userName + e.data
+				}
+				// 删除字符串
+				else{
+					this.userName = this.userName.substring(0,this.userName.length-1)
+				}
+			}
 		}
 	 }
 </script>
@@ -178,24 +193,7 @@
 			height: 100%;
 
 			.title{
-				position: relative;
-				height: 50px;
 				border-bottom: 1px solid #E8E8E8;
-				.divider{
-					border: 2px solid #0080C0;
-					width: 2px;
-					height: 14px;
-					display: inline-block;
-					margin-left: 10px;
-					margin-top: 15px;
-				}
-				h3{
-					height: 100%;
-					line-height: 50px;
-					margin-bottom: 0;
-					display: inline-block;
-				}
-
 				.ant-avatar-circle{
 					background-color: #A4CBFC;
 					cursor: pointer;
@@ -261,6 +259,10 @@
 			line-height: 70px;
 			text-align: center;
 			color: white;
+		}
+
+		.ant-upload{
+			cursor: pointer;
 		}
 	}
 </style>
