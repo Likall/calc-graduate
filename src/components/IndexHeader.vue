@@ -63,16 +63,16 @@ import { mapGetters, mapActions } from 'vuex'
 		computed:{
 			...mapGetters({
 				collapsed: 'header/collapsed',										// menu 折叠
-				tabTitleItem: 'tabTitleItem',										// 顶部tab项
-				detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
+				tabTitleItem: 'publicData/tabTitleItem',										// 顶部tab项
+				detailCurrentComponent: 'publicData/detailCurrentComponent',				     // 详情加载的组件
 				currentUser: 'currentUser',			// 当前登录用户信息
 			})
 		},
 		methods: {
 			...mapActions({
 				setCollapsed: 'header/setCollapsed',								// 设置menu 是否折叠
-				setTabTitleItem: 'setTabTitleItem',									// 设置顶部tab项
-				setDetailCurrentComponent: 'setDetailCurrentComponent',				// 设置当前详情加载的组件
+				setTabTitleItem: 'publicData/setTabTitleItem',									// 设置顶部tab项
+				setDetailCurrentComponent: 'publicData/setDetailCurrentComponent',				// 设置当前详情加载的组件
 				setCurrentUser: 'setCurrentUser',									// 设置当前登录用户信息
 			}),
 			/**

@@ -6,7 +6,8 @@
 			<keep-alive>
 				<component
 					:detailCurrentComponent="detailCurrentComponent"
-					:is="detailCurrentComponent">
+					:is="detailCurrentComponent"
+					@activeKey="setActiveKey">
 				</component>
 			</keep-alive>
 		</div>
@@ -44,14 +45,24 @@
 		},
 		computed: {
 			...mapGetters({
-				detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
+				detailCurrentComponent: 'publicData/detailCurrentComponent',				     // 详情加载的组件
 				posTabWidth: 'header/posTabWidth',									// tab宽度与左边距
 			})
 		},
 		methods: {
 			...mapActions({
-				setDetailCurrentComponent: 'setDetailCurrentComponent',				// 设置当前详情加载的组件
-			})
+				setDetailCurrentComponent: 'publicData/setDetailCurrentComponent',				// 设置当前详情加载的组件
+			}),
+			/**
+			* Introduction 向父组件传递当前击中的key
+			* @author 刘莉
+			* @since 1.0
+			* @param {key} 从StepDetail接收的key
+			*/
+			setActiveKey(key){
+				// 设置当前击中key
+				this.$emit('activeKey', key+'')
+			}
 		}
 	}
 </script>

@@ -67,13 +67,13 @@ export default {
 	},
 	computed: {
 		...mapGetters({
-			tabTitleItem: 'tabTitleItem',				// 顶部标题
+			tabTitleItem: 'publicData/tabTitleItem',				// 顶部标题
 		})
 	},
 	methods:{
 		...mapActions({
-			setTabTitleItem: 'setTabTitleItem',			// 设置顶部标题
-			setDetailCurrentComponent: 'setDetailCurrentComponent',  // 设置详情加载的组件
+			setTabTitleItem: 'publicData/setTabTitleItem',			// 设置顶部标题
+			setDetailCurrentComponent: 'publicData/setDetailCurrentComponent',  // 设置详情加载的组件
 			setCurrentUser: 'setCurrentUser',			// 设置当前登录用户信息
 		}),
 		/**

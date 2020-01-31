@@ -3,8 +3,10 @@
 	<!-- 学生页面首页 -->
 	<div class="studentGradeContainer">
 		<a-spin :spinning="spinning">
+			<!-- 步骤条 -->
+			<step-detail @activeKey="setActiveKey"></step-detail>
 			<div class="btn-form" v-if="currentUser.length > 0">
-				<form-work v-if="detailCurrentComponent === 'StudentGrade'"></form-work>
+				<a-button size="large"> <a-icon type="download" />下载学生信息模板文件</a-button>
 				<div class="uploadCsvContainer" v-if="currentUser[0].role === '2'">
 					<!-- 导入文件 -->
 					<a-upload
@@ -13,7 +15,7 @@
 						@change="handleFileChange"
 						action="http://localhost:8091/gacs/student/uploadfile"
 					>
-					<a-button type="primary" size="large" :disabled="disableOfBtn"> <a-icon type="upload" />导入CSV文件</a-button>
+					<a-button type="primary" size="large" :disabled="disableOfBtn"> <a-icon type="upload" />导入学生信息文件</a-button>
 					</a-upload>
 				</div>
 				
@@ -26,9 +28,11 @@
 					:dataSource="dataSource"
 					:title="tabTitle"
 					@tableLoading="getTableLoading"
+					v-if="studentColumns.length !== 0 && studentData.length !== 0"
 				></course-table-list>
 				<!-- table默认一页显示10条数据 -->
-				<div style="margin: 10px 10px 30px 10px;overflow: hidden" v-if="currentUser[0].role === '2'">
+				<div style="margin: 10px 10px 30px 10px;overflow: hidden" 
+					v-if="currentUser[0].role === '2' && studentColumns.length !== 0 && studentData.length !== 0">
 					<div style="float: right;">
 						<Page :total="studentPagination.total" :current="1"></Page>
 					</div>
@@ -43,13 +47,15 @@
 	import FormWork from '@/components/detail/public/FormWork'
 	import FormTable from '@/components/detail/public/FormTable'
 	import CourseTableList from '@/components/detail/course/CourseTableList'
+	import StepDetail from '@/components/detail/public/StepDetail'
 	export default {
 		name: 'StudentGrade',
 		components: {
 			Header,
 			FormWork,
 			FormTable,
-			CourseTableList
+			CourseTableList,
+			StepDetail
 		},
 		data(){
 			return {
@@ -66,7 +72,7 @@
 			...mapGetters({
 				studentGradeList: 'student/studentGradeList',					// 学生成绩列表
 				currentUser: 'currentUser',										// 用户登录信息
-				detailCurrentComponent: 'detailCurrentComponent',				// 当前详情加载的组件
+				detailCurrentComponent: 'publicData/detailCurrentComponent',				// 当前详情加载的组件
 				studentColumns: 'studentColumns',								// 学生模板文件列
 				studentData: 'studentData',										// 学生模板文件数据
 			})
@@ -80,6 +86,16 @@
 					}else {
 						this.disableOfBtn = true
 					}
+				}
+			}
+		},
+		mounted(){
+			if (this.detailCurrentComponent === 'StudentGrade') {
+				console.log("232323")
+				if (this.studentColumns.length !== 0 && this.studentData.length !== 0) {
+					this.disableOfBtn = false
+				}else {
+					this.disableOfBtn = true
 				}
 			}
 		},
@@ -105,6 +121,17 @@
 			*/
 			getTableLoading(flag){
 				this.tableListSpinning = flag
+			},
+
+			/**
+			* Introduction 向父组件传递当前击中的key
+			* @author 刘莉
+			* @since 1.0
+			* @param {key} 从StepDetail接收的key
+			*/
+			setActiveKey(key){
+				// 设置当前击中key
+				this.$emit('activeKey', key+'')
 			}
 		}
 	}
@@ -114,20 +141,28 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
-		padding-top: 10px;
+		box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		padding: 20px 15px;
 
 		.btn-form{
-			display: flex;
-			justify-content: flex-end;
-			margin-right: 10px;
+			// display: flex;
+			// justify-content: flex-end;
+			// margin-right: 10px;
 			position: relative;
 			width: 100%;
+			top: 30px;
+
+			button{
+				margin-right: 15px;
+			}
 
 			.uploadCsvContainer{
 				display: inline-block; 
-				left: calc(290px - 100%); 
+				// left: calc(290px - 100%); 
 				position: relative; 
-				top: 2px;
+				// top: 2px;
 			}
 		}
 	}

@@ -89,8 +89,8 @@
 		},
 		computed:{
 				...mapGetters({
-					tabTitleItem: 'tabTitleItem',										// 顶部tab项
-					detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
+					tabTitleItem: 'publicData/tabTitleItem',										// 顶部tab项
+					detailCurrentComponent: 'publicData/detailCurrentComponent',				     // 详情加载的组件
 					currentUser: 'currentUser',										// 当前登录用户信息
 				})
 			},
@@ -112,8 +112,8 @@
 		},
 		methods: {
 			...mapActions({
-				setTabTitleItem: 'setTabTitleItem',									// 设置顶部tab项
-				setDetailCurrentComponent: 'setDetailCurrentComponent',				// 设置当前详情加载的组件
+				setTabTitleItem: 'publicData/setTabTitleItem',									// 设置顶部tab项
+				setDetailCurrentComponent: 'publicData/setDetailCurrentComponent',				// 设置当前详情加载的组件
 			}),
 			getBase64(img, callback) {
 				const reader = new FileReader();

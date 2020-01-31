@@ -16,7 +16,8 @@
 		</tab-title>
 		<!-- 详情 -->
 		<guide-detail
-			:tabs="tabs">
+			:tabs="tabs"
+			@activeKey="setActiveKey">
 		</guide-detail>
 	</div>
 </template>
