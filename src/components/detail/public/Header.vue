@@ -33,11 +33,8 @@ import { mapGetters } from 'vuex'
 <style lang="scss" scoped>
 	.headerContainer{
 		width: 250px;
-		margin-top: 15px;
+		margin-top: 45px;
 		
-		.ant-input-group-wrapper{
-			margin-left: 10px;
-		}
 	}
 	
 </style>

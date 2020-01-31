@@ -1,7 +1,6 @@
 import types from './types'
 
 const state = {
-	tabTitleItem: [],						// 顶部tab
 	leftBarList: [
 		{
 			title: '课程',
@@ -36,24 +35,21 @@ const state = {
 		},
 
 	],
-	detailCurrentComponent: '',				// 详情加载的组件
-	courseColumns: [],						// 课程模板文件列
+	detailCurrentComponent: '',					// 详情加载的组件
+	courseColumns: [],							// 课程模板文件列
 	courseData: [],								// 课程模板文件数据
-	studentColumns: [],						// 学生模板文件列
+	studentColumns: [],							// 学生模板文件列
 	studentData: [],							// 学生模板文件数据
-	relDemandAndCourseColumns: [],			// 课程指标点与课程模板文件列
-	relDemandAndCourseData: [],				// 课程指标点与课程模板文件数据
+	relDemandAndCourseColumns: [],				// 课程指标点与课程模板文件列
+	relDemandAndCourseData: [],					// 课程指标点与课程模板文件数据
+	demandColumns: [],							// 毕业要求模板文件列
+	demandData: [],								// 毕业要求模板文件数据
 	currentUser: [],							// 登录用户信息
+	hasCompletePage: 0,			// 已经完成的进度条
 }
 var getters = {
-	tabTitleItem: state => {
-        return state.tabTitleItem
-	},
 	leftBarList: state => {
         return state.leftBarList
-	},
-	detailCurrentComponent: state => {
-		return state.detailCurrentComponent
 	},
 	courseColumns: state => {
         return state.courseColumns
@@ -75,23 +71,18 @@ var getters = {
 	},
 	currentUser: state => {
 		return state.currentUser
+	},
+	hasCompletePage: state => {
+		return state.hasCompletePage
+	},
+	demandColumns: state => {
+		return state.demandColumns
+	},
+	demandData: state => {
+		return state.demandData
 	}
 }
 const actions = {
-	// 设置menu是否折叠
-	setTabTitleItem: ({
-        commit,
-        state
-    }, value) => {
-        commit(types.SET_TABTITLEITEM, value)
-	},
-	// 设置当前详情加载组件
-	setDetailCurrentComponent: ({
-		commit,
-		state
-	}, value) => {
-		commit(types.SET_DETAILCURRENTCOMPONENT, value)
-	},
 	// 课程模板文件列
 	setCourseColumns: ({
         commit,
@@ -140,15 +131,35 @@ const actions = {
 		state
 	}, value) => {
 		commit(types.SET_CURRENTUSER, value)
-	}
+	},
+	setHasCompletePage: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_HASCOMPLETEPAGE, value)
+	},
+	// 设置毕业要求数据
+	setDemandColumns: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_DEMANDCOLUMNS, value)
+	},
+	// 设置毕业要求数据
+	setDemandData: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_DEMANDDATA, value)
+	},
 }
 const mutations = {
-	[types.SET_TABTITLEITEM](state, value) {
-        state.tabTitleItem = value
-	},
-	[types.SET_DETAILCURRENTCOMPONENT](state, value) {
-		state.detailCurrentComponent = value
-	},
+	// [types.SET_TABTITLEITEM](state, value) {
+  //       state.tabTitleItem = value
+	// },
+	// [types.SET_DETAILCURRENTCOMPONENT](state, value) {
+	// 	state.detailCurrentComponent = value
+	// },
 	[types.SET_COURSECOLUMNS](state, value) {
         state.courseColumns = value
 	},
@@ -170,6 +181,16 @@ const mutations = {
 	[types.SET_CURRENTUSER](state, value) {
 		state.currentUser = value
 	},
+	[types.SET_HASCOMPLETEPAGE](state, value) {
+		state.hasCompletePage = value
+	},
+	[types.SET_DEMANDDATA](state, value) {
+		state.demandData = value
+	},
+	[types.SET_DEMANDCOLUMNS](state, value) {
+		state.demandColumns = value
+	},
+	
 	
 }
 // 导出

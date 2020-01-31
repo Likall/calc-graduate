@@ -3,16 +3,18 @@
 		
 		<div class="uploadFileContainer" v-if="currentUser[0].role === '1'">
 			<!--  -->
-			<a-button  @change="onUpload" class="upload-file" id="uploadFile" > 
-				<a-icon type="upload"/>上传模板文件(仅.csv文件)
-				<input type="file" name="uploadCSV" id="upCsv" />
+			<!-- <a-button  @change="onUpload" class="upload-file" id="uploadFile" >  -->
+			<a-button   class="upload-file" id="uploadFile" > 
+				<a-icon type="upload"/>{{title}}(仅.csv文件)
+				<input type="file" name="uploadCSV" id="upCsv" @change="uploadFile"/>
 			</a-button>
 			
 		</div>
-		<Button size="large" @click="exportData(1)" class="download" v-if="currentUser[0].role === '2'">
+		<Button size="large" @click="exportData(1)" class="download" v-if="currentUser[0].role === '2'" :disabled="disableOfDown">
 			 <Icon type="ios-download-outline"></Icon> 
 				下载模板
 		</Button>
+		<span style="color: #d81e06;" v-if="disableOfDown === true"><i class="iconfont icon-zhuyi"/>暂无模板文件，等待管理员上传</span>
 		<!-- 管理员登录时 -->
 		<div class="adminTableContainer" v-if="currentUser[0].role === '1'">
 			<div class="title">
@@ -25,7 +27,8 @@
 				size="small" 
 				ref="table" 
 				:show-header="false"
-				:border="true">
+				:border="true"
+				width="800">
 			</Table>
 			<br>
 		</div>
@@ -52,9 +55,11 @@
 <script>
 	import { mapGetters, mapActions } from 'vuex';
 	import tools from '@/public/tools/tools'
+	import XLSX from 'xlsx'
 	export default {
 		name: 'FormWork',
 		props: [
+			'title'
 		],
 		data(){
 			return {
@@ -67,6 +72,7 @@
 				formTitle: '',
 				columns: [],
 				data: [],
+				disableOfDown: false,			// 下载模板按钮是否可以点击
 			}
 		},
 		computed:{
@@ -74,8 +80,8 @@
 				studentGrade: 'formwork/studentGrade',				// 成绩
 				studentCourse: 'formwork/studentCourse'	,			// 课程
 				relDemandCourse: 'formwork/relDemandCourse'	,		// 指标点与课程关系
-				tabTitleItem: 'tabTitleItem',						// 顶部tab项
-				detailCurrentComponent: 'detailCurrentComponent',	// 详情加载的组件
+				tabTitleItem: 'publicData/tabTitleItem',						// 顶部tab项
+				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 详情加载的组件
 				courseColumns: 'courseColumns',						// 课程模板文件列
 				courseData: 'courseData',							// 课程模板文件数据
 				studentColumns: 'studentColumns',					// 学生模板文件列
@@ -93,18 +99,39 @@
 					// 设置课程信息模板信息
 					this.columns = this.courseColumns
 					this.data = this.courseData
+					// 设置下载模板文件是否可以点击
+					if (this.courseColumns.length !== 0 && this.courseData.length !== 0) {
+						// 模板文件已上传设置可以点击
+						this.disableOfDown = false
+					}else {
+						this.disableOfDown = true
+					}
 				}else if(New  === 'RelDemandAndCourseDetail'){
 					this.formTitle = this.titleData[2]
 					this.formData = tools.deepClone(this.relDemandCourse)
 					// 设置指标点与课程模板信息
 					this.columns = this.relDemandAndCourseColumns
 					this.data = this.relDemandAndCourseData
+					// 设置下载模板文件是否可以点击
+					if (this.relDemandAndCourseColumns.length !== 0 && this.relDemandAndCourseData.length !== 0) {
+						// 模板文件已上传设置可以点击
+						this.disableOfDown = false
+					}else {
+						this.disableOfDown = true
+					}
 				}else if(New === 'StudentGrade'){
 					this.formData = tools.deepClone(this.studentGrade)
 					this.formTitle = this.titleData[0]
 					// 设置学生成绩模板信息
 					this.columns = this.studentColumns
 					this.data = this.studentData
+					// 设置下载模板文件是否可以点击
+					if (this.studentColumns.length !== 0 && this.studentData.length !== 0) {
+						// 模板文件已上传设置可以点击
+						this.disableOfDown = false
+					}else {
+						this.disableOfDown = true
+					}
 				}
 			}
 		},
@@ -115,18 +142,39 @@
 				// 设置课程信息模板信息
 				this.columns = this.courseColumns
 				this.data = this.courseData
+				// 设置下载模板文件是否可以点击
+				if (this.courseColumns.length !== 0 && this.courseData.length !== 0) {
+					// 模板文件已上传设置可以点击
+					this.disableOfDown = false
+				}else {
+					this.disableOfDown = true
+				}
 			}else if(this.detailCurrentComponent  === 'RelDemandAndCourseDetail'){
 				this.formTitle = this.titleData[2]
 				this.formData = tools.deepClone(this.relDemandCourse)
 				// 设置指标点与课程模板信息
 				this.columns = this.relDemandAndCourseColumns
 				this.data = this.relDemandAndCourseData
+				// 设置下载模板文件是否可以点击
+				if (this.relDemandAndCourseColumns.length !== 0 && this.relDemandAndCourseData.length !== 0) {
+					// 模板文件已上传设置可以点击
+					this.disableOfDown = false
+				}else {
+					this.disableOfDown = true
+				}
 			}else if(this.detailCurrentComponent === 'StudentGrade'){
 				this.formData = tools.deepClone(this.studentGrade)
 				this.formTitle = this.titleData[0]
 				// 设置学生成绩模板信息
 				this.columns = this.studentColumns
 				this.data = this.studentData
+				// 设置下载模板文件是否可以点击
+				if (this.studentColumns.length !== 0 && this.studentData.length !== 0) {
+					// 模板文件已上传设置可以点击
+					this.disableOfDown = false
+				}else {
+					this.disableOfDown = true
+				}
 			}
 			
 			
@@ -159,21 +207,19 @@
 			// 导出文件
 			exportData(type) {
                 if (type === 1) {
+					let fileName = ''
+					// 设置模板文件名称
+					if(this.detailCurrentComponent === 'CourseDetail'){
+						fileName = "课程信息模板"
+					} else if (this.detailCurrentComponent === 'StudentGrade') {
+						fileName = "学生成绩模板"
+					} else if (this.detailCurrentComponent === 'RelDemandAndCourseDetail') {
+						fileName = '课程与指标点模板'
+					}
                     this.$refs.table.exportCsv({
-						filename: 'The original data',
+						filename: fileName,
 						noHeader: true
-                    });
-                } else if (type === 2) {
-                    this.$refs.table.exportCsv({
-                        filename: 'Sorting and filtering data',
-                        original: false
-                    });
-                } else if (type === 3) {
-                    this.$refs.table.exportCsv({
-                        filename: 'Custom data',
-                        columns: this.columns8.filter((col, index) => index < 4),
-                        data: this.data7.filter((data, index) => index < 4)
-                    });
+					});
 				}
 			},
 
@@ -255,8 +301,56 @@
 								}
 								
 							}
+							self.disableOfDown = false;
 						}
 					}
+				}
+			},
+
+			uploadFile(e){
+				console.log(e)
+				//拿到所导入文件的名字
+				let fileName = e.target.files[0]
+				//定义reader，存放文件读取方法
+                let reader = new FileReader()
+				//启动函数
+                reader.readAsBinaryString(fileName)
+                //onload在文件被读取时自动触发
+                reader.onload = function(e) {
+                    //workbook存放excel的所有基本信息
+					let workbook = XLSX.read(e.target.result, {type: 'binary'})
+					console.log(workbook)
+                    //定义sheetList中存放excel表格的sheet表，就是最下方的tab
+					let sheetList = workbook.SheetNames
+					console.log()
+                    //存放json数组格式的表格数据
+                    let resultJson = []
+                    //存放字符串数组格式的表格数据
+                    let resultFormulae = []
+                    sheetList.forEach(function(y) {
+						let worksheet = workbook.Sheets[y]
+						console.log(worksheet)
+						let json = XLSX.utils.sheet_to_json(worksheet)
+						console.log(json)
+                        let formulae = XLSX.utils.sheet_to_formulae(workbook.Sheets[y])
+                        if(json.length > 0){
+                            //具体如何处理看项目需求，我的项目其实只有一个sheet，在这里写成循环避免大家误会
+                            //数据处理与存放
+                            resultJson.push(json)
+                            resultFormulae.push(formulae)
+                        }
+ 
+					});
+					console.log("1",resultJson)
+					console.log("2",resultFormulae)
+					//因为我的表格只有一列，因此我取出resultJson第一组数据的key作为键去遍历取出手机号码
+					// let tableHeader = Object.keys(result[0])[0]
+					// console.log("table",tableHeader)
+                    // let importInfo = result.map((item) => {
+					// 	console.log("item",item)
+                    //     return item[tableHeader]
+					// })
+					// console.log("im",importInfo)
 				}
 			}
 		}
@@ -281,7 +375,7 @@
 
 		.adminTableContainer{
 			position: relative;
-			left: -150px;
+			// left: -150px;
 
 			.ivu-table-wrapper-with-border{
 				margin-top: 10px;
@@ -319,7 +413,7 @@
 		.uploadFileContainer{
 			width: 250px;
 			position: absolute;
-			left: -140px;
+			// left: -140px;
 			top: -35px;
 			#uploadFile{
 				height: 40px;

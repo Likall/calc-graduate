@@ -2,38 +2,43 @@
 	<div class="courseDetailContainer">
 		
 		<a-spin :spinning="spinning">
+			<!-- 步骤条 -->
+			<step-detail @activeKey="setActiveKey"></step-detail>
 			<div class="btn-form" v-if="currentUser.length > 0">
-				<form-work v-if="detailCurrentComponent === 'CourseDetail'" ></form-work>
+				<!-- <form-work v-if="detailCurrentComponent === 'CourseDetail'" ></form-work> -->
+				<a-button size="large"> <a-icon type="download" />下载课程模板文件</a-button>
 				<div class="uploadCsvContainer" v-if="currentUser[0].role === '2'">
 					<!-- 导入文件 -->
 					<a-upload
 						name="file"
 						:multiple="false"
 						@change="handleFileChange"
-						action="http://localhost:8091/gacs/course/uploadfile"
+						action="http://localhost:8091/gacs/excel/course"
 					>
-					<a-button type="primary" size="large" :disabled="disableOfBtn"> <a-icon type="upload" />导入CSV文件</a-button>
+					<a-button type="primary" size="large"> <a-icon type="upload" />导入课程信息文件</a-button>
 					</a-upload>
 				</div>
 				
 			</div>
-			<a-spin :spinning="tableListSpinning" v-if="currentUser.length > 0 "> 
-				<Header></Header>
+			<Header></Header>
+			<course-table-list v-if="isSuccess" :reponseData="responseData" :title="tabTitle">
+
+			</course-table-list>
 				<!-- 列表 -->
-				<course-table-list 
+				<!-- <course-table-list 
 					:columns="columns"
 					:dataSource="dataSource"
 					:title="tabTitle"
 					@tableLoading="getTableLoading"
-				></course-table-list>
+				></course-table-list> -->
 				<!-- table默认一页显示10条数据 -->
-				<div style="margin: 10px 10px 30px 10px;overflow: hidden" v-if="currentUser[0].role === '2'">
+				<!-- <div style="margin: 10px 10px 30px 10px;overflow: hidden" 
+					v-if="currentUser[0].role === '2' && courseColumns.length !== 0 && courseData.length !== 0">
 					<div style="float: right;">
 						<Page :total="coursePagination.total" :current="1" @on-change="changePage"></Page>
 					</div>
-				</div>
+				</div> -->
 			</a-spin>
-		</a-spin>
 	</div>
 </template>
 <script>
@@ -41,6 +46,7 @@
 	import FormWork from '@/components/detail/public/FormWork'
 	import FormTable from '@/components/detail/public/FormTable'
 	import CourseTableList from '@/components/detail/course/CourseTableList'
+	import StepDetail from '@/components/detail/public/StepDetail'
 	import { mapGetters } from 'vuex'
 	import config from '@/api/config.js'
 	export default {
@@ -49,7 +55,8 @@
 			Header,
 			FormWork,
 			FormTable,
-			CourseTableList
+			CourseTableList,
+			StepDetail
 		},
 		data(){
 			return {
@@ -93,39 +100,48 @@
 				tabTitle: '课程列表',
 				coursePagination: {current: 1, total: 0, pageSize: 10, page: 1},			// 分页信息
 				disableOfBtn: true,
+				isSuccess: false,			// 导入文件是否成功
+				responseData: {},			// 接口返回数据
 			}
 		},
 		computed:{
 			...mapGetters({
 				currentUser: 'currentUser',				 // 当前登录用户信息
-				detailCurrentComponent: 'detailCurrentComponent',	// 当前详情加载的组件
+				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 当前详情加载的组件
 				courseColumns: 'courseColumns',						// 课程模板文件列
 				courseData: 'courseData',							// 课程模板文件数据
 			})
 		},
 		watch:{
 			// 设置button是否是可点击
-			detailCurrentComponent(New, Old){
-				if (New === 'CourseDetail') {
-					if (this.courseColumns.length !== 0 && this.courseData.length !== 0) {
-						this.disableOfBtn = false
-					}else {
-						this.disableOfBtn = true
-					}
-				}
-			}
+			// detailCurrentComponent(New, Old){
+			// 	if (New === 'CourseDetail') {
+			// 		if (this.courseColumns.length !== 0 && this.courseData.length !== 0) {
+			// 			this.disableOfBtn = false
+			// 		}else {
+			// 			this.disableOfBtn = true
+			// 		}
+			// 	}
+			// }
 		},
 		mounted(){
 			// 获得所有课程列表
-			this.getCourseInfoList()
+			// this.getCourseInfoList()
 		},
 		methods: {
 			// 处理文件上传
 			handleFileChange(info){
+				this.spinning = true;
 				if (info.file.status === 'done') {
+					this.isSuccess = true;
+					this.spinning = false;
+					// 执行成功
+					this.responseData = info.file.response
 					this.$message.success('上传成功');
 				} else if (info.file.status === 'error') {
 					this.$message.error('上传失败');
+					this.isSuccess = false;
+					this.spinning = false;
 				}
 			},
 
@@ -177,6 +193,17 @@
 			*/
 			getTableLoading(flag){
 				this.tableListSpinning = flag
+			},
+
+			/**
+			* Introduction 向父组件传递当前击中的key
+			* @author 刘莉
+			* @since 1.0
+			* @param {key} 从StepDetail接收的key
+			*/
+			setActiveKey(key){
+				// 设置当前击中key
+				this.$emit('activeKey', key+'')
 			}
 		}
 	}
@@ -187,19 +214,26 @@
 		width: 100%;
 		height: 100%;
 		padding-top: 10px;
+		box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		padding: 20px 15px;
 
 		.btn-form{
-			display: flex;
-			justify-content: flex-end;
-			margin-right: 10px;
+			// display: flex;
+			// justify-content: flex-end;
+			// margin-right: 10px;
 			position: relative;
 			width: 100%;
+			top: 30px;
+
+			button{
+				margin-right: 15px;
+			}
 
 			.uploadCsvContainer{
 				display: inline-block; 
-				left: calc(290px - 100%); 
 				position: relative; 
-				top: 2px;
 			}
 		}
 	}

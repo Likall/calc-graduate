@@ -35,7 +35,7 @@
 		computed: {
 			...mapGetters({
 				posTabWidth: 'header/posTabWidth',								// tab宽度与左边距
-				tabTitleItem: 'tabTitleItem',									// 顶部tab项
+				tabTitleItem: 'publicData/tabTitleItem',									// 顶部tab项
 				leftBarList: 'leftBarList',										// 左侧边栏栏项
 			})
 		},
@@ -48,8 +48,8 @@
 		},
 		methods:{
 			...mapActions({
-				setDetailCurrentComponent: 'setDetailCurrentComponent',				// 设置当前详情加载的组件
-				setTabTitleItem: 'setTabTitleItem',									// 设置tab项
+				setDetailCurrentComponent: 'publicData/setDetailCurrentComponent',				// 设置当前详情加载的组件
+				setTabTitleItem: 'publicData/setTabTitleItem',									// 设置tab项
 			}),
 			editTab(targetKey, action){
 				this[action](targetKey);
@@ -92,7 +92,6 @@
 					let exsist = this.tabTitleItem.filter(data => {
 						return data.key === activeKey
 					})
-					console.log(exsist)
 					if (exsist.length !== 0){
 						this.setDetailCurrentComponent(exsist[0].datas.component)
 					}

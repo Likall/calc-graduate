@@ -67,31 +67,10 @@
 							<span class="sub-title">教师删除</span>
 						</a-menu-item>
 					</a-sub-menu>
-					<a-menu-item key="12">
-						<i class="iconfont icon-tongji paddingRigTwenty icon-eighteen" />
-						统计页面
-					</a-menu-item>
 				</a-sub-menu>
-				<a-menu-item key="1"
-					@click="handleMenuChange('6', '0', '学生', 'StudentGrade', 'icon-xuesheng')">
-					<span class="title">
-						<i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" />
-						学生
-					</span>
-				</a-menu-item>
-				<a-menu-item key="2"
-					@click="handleMenuChange('1', '0', '课程', 'CourseDetail', 'icon-kecheng')">
-					<span class="title">
-						<i class="iconfont icon-kecheng paddingRigTwenty icon-eighteen" />
-						课程
-					</span>
-				</a-menu-item>
-				<a-menu-item key="3"
-					@click="handleMenuChange('3', '0', '指标点与课程关系', 'RelDemandAndCourseDetail', 'icon-guanxi')">
-					<span class="title">
-						<i class="iconfont icon-guanxi paddingRigTwenty icon-eighteen" />
-						指标点与课程关系
-					</span>
+				<a-menu-item key="12">
+					<i class="iconfont icon-tongji paddingRigTwenty icon-eighteen" />
+					统计页面
 				</a-menu-item>
 			</a-menu>
 		</div>
@@ -113,9 +92,9 @@
 		computed:{
 			...mapGetters({
 				collapsed: 'header/collapsed',										// menu 折叠
-				tabTitleItem: 'tabTitleItem',										// 顶部tab项
+				tabTitleItem: 'publicData/tabTitleItem',										// 顶部tab项
 				leftBarList: 'leftBarList',											// 左侧边栏栏项
-				detailCurrentComponent: 'detailCurrentComponent',				     // 详情加载的组件
+				detailCurrentComponent: 'publicData/detailCurrentComponent',				     // 详情加载的组件
 				currentUser: 'currentUser',				 // 当前登录用户信息
 			})
 		},
@@ -124,8 +103,8 @@
 		},
 		methods: {
 			...mapActions({
-				setTabTitleItem: 'setTabTitleItem',									// 设置顶部tab项
-				setDetailCurrentComponent: 'setDetailCurrentComponent',				// 设置当前详情加载的组件
+				setTabTitleItem: 'publicData/setTabTitleItem',									// 设置顶部tab项
+				setDetailCurrentComponent: 'publicData/setDetailCurrentComponent',				// 设置当前详情加载的组件
 			}),
 
 			/**
