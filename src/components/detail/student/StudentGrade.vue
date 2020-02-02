@@ -5,7 +5,7 @@
 		<div class="content-box">
 			<a-spin :spinning="spinning" tip="正在生成模板文件,请等待....">
 				<div class="btn-form">
-					<a-button @click="getStudentInfo" size="large">下载课程与学生关系模板</a-button>
+					<a-button @click="getStudentInfo" size="large"><a-icon type="download" />下载课程与学生关系模板</a-button>
 					<div class="uploadContainer">
 						<!-- 导入文件 -->
 						<a-upload
@@ -126,11 +126,11 @@
 				require.ensure([], () => {
 					const { export_json_to_excel } = require("../../../excel/Export2Excel");
  
-				    const tHeader = ['按格式填写,勿修改已填写的模板内容,空白处填写学生成绩']; //将对应的属性名转换成中文
+				    const tHeader = ['按格式填写,勿修改已填写的模板内容']; //将对应的属性名转换成中文
 				    const list = this.dataSource;　　
 					const　filterVal = this.filterVal　　　
 					const data = this.formatJson(filterVal, list);
-				    export_json_to_excel(tHeader, data, '模板文件');　
+				    export_json_to_excel(tHeader, data, '课程与学生模板');　
 				});
 			},
 

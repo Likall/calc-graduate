@@ -7,4 +7,5 @@ export default {
 	UPDATE_COURSE_INFO: APP_DOMAIN + '/course/updateCourse',  // 更新课程信息
 	DELETE_COURSE_INFO: APP_DOMAIN + '/course/deleteCourse',	// 删除课程
 	GET_ALL_STUDENT_LIST: APP_DOMAIN + '/student/list',		// 获得学生列表
+	GET_ALL_DEMAND2_LIST: APP_DOMAIN + '/demand/list',		// 获得指标点2列表
 }

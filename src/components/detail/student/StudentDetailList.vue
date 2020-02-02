@@ -2,12 +2,16 @@
 <template>
 	<!-- 学生页面首页 -->
 	<div class="studentDetailListContainer">
-		<Header style="margin-top:0;" :placeData="placeData"></Header>
-		<!-- 列表 -->
-		<table-list 
-			:title="tabTitle"
-			:com="currentCom"
-		></table-list>
+		<div class="content-box">
+			<Header style="padding:10px 0px 0px 10px;" :placeData="placeData"></Header>
+			<!-- 列表 -->
+			<table-list 
+				:title="tabTitle"
+				:com="currentCom"
+				style="padding:10px 0px 0px 10px;"
+			></table-list>
+		</div>
+		
 	</div>
 </template>
 <script>
@@ -107,33 +111,20 @@
 	}
 </script>
 <style lang="scss" scoped>
-	.studentGradeContainer{
+	.studentDetailListContainer{
 		position: relative;
 		width: 100%;
 		height: 100%;
 		box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
-		padding: 20px 15px;
+		padding: 15px;
 
-		.btn-form{
-			// display: flex;
-			// justify-content: flex-end;
-			// margin-right: 10px;
+		.content-box{
 			position: relative;
 			width: 100%;
-			top: 30px;
-
-			button{
-				margin-right: 15px;
-			}
-
-			.uploadCsvContainer{
-				display: inline-block; 
-				// left: calc(290px - 100%); 
-				position: relative; 
-				// top: 2px;
-			}
+			height: 100%;
+			background-color: white;
 		}
 	}
 </style>
