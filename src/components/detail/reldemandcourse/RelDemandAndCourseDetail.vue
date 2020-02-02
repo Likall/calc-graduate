@@ -2,8 +2,6 @@
 	<!-- 指标点与课程关系 -->
 	<div class="relDetailContainer">
 		<a-spin :spinning="spinning">
-			<!-- 步骤条 -->
-			<step-detail @activeKey="setActiveKey"></step-detail>
 			<div class="btn-form" v-if="currentUser.length > 0">
 				<a-button size="large"> <a-icon type="download" />下载指标点与课程关系模板文件</a-button>
 				<div class="uploadCsvContainer" v-if="currentUser[0].role === '2'">
