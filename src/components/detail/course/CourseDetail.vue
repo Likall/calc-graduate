@@ -1,15 +1,15 @@
 <template>
 	<div class="courseDetailContainer">
-		
-		<!-- <a-spin :spinning="spinning"> -->
-		<!-- 搜索按钮 -->
-		<Header style="margin-top:0;" :placeData="placeData"></Header>
-		<!-- 列表 -->
-		<table-list 
-			:title="tabTitle"
-			:com="currentCom">
-		</table-list>
-		<!-- </a-spin> -->
+		<div class="content-box">
+			<!-- 搜索按钮 -->
+			<Header style="padding:10px 0px 0px 10px;" :placeData="placeData"></Header>
+			<!-- 列表 -->
+			<table-list 
+				:title="tabTitle"
+				:com="currentCom"
+				style="padding:10px 0px 0px 10px;">
+			</table-list>
+		</div>
 	</div>
 </template>
 <script>
@@ -86,16 +86,6 @@
 			})
 		},
 		watch:{
-			// 设置button是否是可点击
-			// detailCurrentComponent(New, Old){
-			// 	if (New === 'CourseDetail') {
-			// 		if (this.courseColumns.length !== 0 && this.courseData.length !== 0) {
-			// 			this.disableOfBtn = false
-			// 		}else {
-			// 			this.disableOfBtn = true
-			// 		}
-			// 	}
-			// }
 		},
 		mounted(){
 			// 获得所有课程列表
@@ -168,22 +158,11 @@
 		-moz-box-sizing: border-box;
 		padding: 20px 15px;
 
-		.btn-form{
-			// display: flex;
-			// justify-content: flex-end;
-			// margin-right: 10px;
+		.content-box{
 			position: relative;
 			width: 100%;
-			top: 30px;
-
-			button{
-				margin-right: 15px;
-			}
-
-			.uploadCsvContainer{
-				display: inline-block; 
-				position: relative; 
-			}
+			height: 100%;
+			background-color: white;
 		}
 	}
 </style>
