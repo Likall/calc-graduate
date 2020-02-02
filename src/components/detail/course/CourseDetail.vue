@@ -1,51 +1,22 @@
 <template>
 	<div class="courseDetailContainer">
 		
-		<a-spin :spinning="spinning">
-			<!-- 步骤条 -->
-			<step-detail @activeKey="setActiveKey"></step-detail>
-			<div class="btn-form" v-if="currentUser.length > 0">
-				<!-- <form-work v-if="detailCurrentComponent === 'CourseDetail'" ></form-work> -->
-				<a-button size="large"> <a-icon type="download" />下载课程模板文件</a-button>
-				<div class="uploadCsvContainer" v-if="currentUser[0].role === '2'">
-					<!-- 导入文件 -->
-					<a-upload
-						name="file"
-						:multiple="false"
-						@change="handleFileChange"
-						action="http://localhost:8091/gacs/excel/course"
-					>
-					<a-button type="primary" size="large"> <a-icon type="upload" />导入课程信息文件</a-button>
-					</a-upload>
-				</div>
-				
-			</div>
-			<Header></Header>
-			<course-table-list v-if="isSuccess" :reponseData="responseData" :title="tabTitle">
-
-			</course-table-list>
-				<!-- 列表 -->
-				<!-- <course-table-list 
-					:columns="columns"
-					:dataSource="dataSource"
-					:title="tabTitle"
-					@tableLoading="getTableLoading"
-				></course-table-list> -->
-				<!-- table默认一页显示10条数据 -->
-				<!-- <div style="margin: 10px 10px 30px 10px;overflow: hidden" 
-					v-if="currentUser[0].role === '2' && courseColumns.length !== 0 && courseData.length !== 0">
-					<div style="float: right;">
-						<Page :total="coursePagination.total" :current="1" @on-change="changePage"></Page>
-					</div>
-				</div> -->
-			</a-spin>
+		<!-- <a-spin :spinning="spinning"> -->
+		<!-- 搜索按钮 -->
+		<Header style="margin-top:0;" :placeData="placeData"></Header>
+		<!-- 列表 -->
+		<table-list 
+			:title="tabTitle"
+			:com="currentCom">
+		</table-list>
+		<!-- </a-spin> -->
 	</div>
 </template>
 <script>
 	import Header from '@/components/detail/public/Header'
 	import FormWork from '@/components/detail/public/FormWork'
 	import FormTable from '@/components/detail/public/FormTable'
-	import CourseTableList from '@/components/detail/course/CourseTableList'
+	import TableList from '@/components/detail/public/TableList'
 	import StepDetail from '@/components/detail/public/StepDetail'
 	import { mapGetters } from 'vuex'
 	import config from '@/api/config.js'
@@ -55,7 +26,7 @@
 			Header,
 			FormWork,
 			FormTable,
-			CourseTableList,
+			TableList,
 			StepDetail
 		},
 		data(){
@@ -102,6 +73,8 @@
 				disableOfBtn: true,
 				isSuccess: false,			// 导入文件是否成功
 				responseData: {},			// 接口返回数据
+				placeData: '请输入课程名称', 
+				currentCom: 'CourseDetail',	// 当前组件名称
 			}
 		},
 		computed:{
@@ -145,31 +118,7 @@
 				}
 			},
 
-			// 获得课程信息列表
-			getCourseInfoList(){
-				let self = this
-				// 开启loading
-				self.tableListSpinning = true;
-				let page = parseInt(self.coursePagination.page)
-				let	pageSize = parseInt(self.coursePagination.pageSize)
-				
-				self.axios.post(config.GET_ALL_COURSE_LIST + '?page=' +page +'&pageSize=' + pageSize).then(response =>{
-					// 查询成功
-					if (response.data.code === '200'){
-						// 有数据
-						if (response.data.data.data.length > 0){
-							// 分页信息
-							const coursePagination = {...self.coursePagination}
-							// 总数
-							coursePagination.total = parseInt(response.data.data.count)
-							self.coursePagination = coursePagination
-							self.dataSource = response.data.data.data
-						}
-					}
-					// 关闭loading
-					self.tableListSpinning = false
-				})
-			},
+			
 
 			/**
 			* Introduction 分页，页数change事件

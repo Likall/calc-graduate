@@ -22,6 +22,11 @@
 	import DemandDetail from '@/components/detail/demand/DemandDetail.vue'
 	import AchevementDetail from '@/components/detail/achevement/AchevementDetail.vue'
 	import PlanDetail from '@/components/detail/plan/PlanDetail.vue'
+	import RoleStuDetail from '@/components/detail/user/RoleStuDetail'
+	import RoleStuDelDetail from '@/components/detail/user/RoleStuDelDetail'
+	import RoleTecDetail from '@/components/detail/user/RoleTecDetail'
+	import RoleTecDelDetail from '@/components/detail/user/RoleTecDelDetail'
+	import StudentDetailList from '@/components/detail/student/StudentDetailList'
 	import { mapGetters, mapActions } from 'vuex'
 	export default {
 		name: 'GuideDetail',
@@ -33,7 +38,12 @@
 			RelDemandAndCourseDetail,
 			DemandDetail,
 			AchevementDetail,
-			PlanDetail
+			PlanDetail,
+			RoleStuDetail,
+			RoleStuDelDetail,
+			RoleTecDetail,
+			RoleTecDelDetail,
+			StudentDetailList
 		},
 		props: [
 			'tabs'

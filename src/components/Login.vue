@@ -32,7 +32,8 @@
 											['psw', 
 												{ rules: [{ required: true, message: '请输入密码' }] 
 										}]"
-										@change="handlePswChange"/>
+										@change="handlePswChange"
+										type="password"/>
 								</a-form-item>
 								<i class="iconfont icon-shanchu password-icon" 
 									v-if="isShowPswIcon"

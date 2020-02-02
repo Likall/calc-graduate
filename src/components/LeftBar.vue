@@ -10,15 +10,21 @@
 				<a-sub-menu key="sub1">
 					<span slot="title"><i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" /><span>学生</span></span>
 					<a-menu-item key="6"
-						@click="handleMenuChange('6', '0', '成绩', 'StudentGrade', '')">
+						@click="handleMenuChange('6', '0', '学生列表', 'StudentDetailList', '')">
 						<span class="sub-title">
-							成绩
+							学生列表
+						</span>
+					</a-menu-item>
+					<a-menu-item key="14"
+						@click="handleMenuChange('14', '0', '课程与学生关系', 'StudentGrade', '')">
+						<span class="sub-title">
+							课程与学生关系
 						</span>
 					</a-menu-item>
 					<a-menu-item key="7"
-						@click="handleMenuChange('7', '0', '成绩统计', 'StudentAnalysis', '')">
+						@click="handleMenuChange('7', '0', '统计', 'StudentAnalysis', '')">
 						<span class="sub-title">
-							成绩统计
+							统计
 						</span>
 					</a-menu-item>
 				</a-sub-menu>
@@ -48,11 +54,11 @@
 							<i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" />
 							<span class="sub-title">学生</span>
 						</span>
-						<a-menu-item key="8">
-							<span class="sub-title">学生列表</span>
-						</a-menu-item>
 						<a-menu-item key="9">
-							<span class="sub-title">学生删除</span>
+							<span class="sub-title" @click="handleMenuChange('9', '0', '学生列表', 'RoleStuDetail', '')">学生列表</span>
+						</a-menu-item>
+						<a-menu-item key="10">
+							<span class="sub-title" @click="handleMenuChange('10', '0', '学生删除', 'RoleStuDelDetail', '')">学生删除</span>
 						</a-menu-item>
 					</a-sub-menu>
 					<a-sub-menu key="sub1-2" >
@@ -60,15 +66,15 @@
 							<i class="iconfont icon-jiaoshi paddingRigTwenty icon-eighteen" />
 							<span>教师</span>
 						</span>
-						<a-menu-item key="10">
-							<span class="sub-title">教师列表</span>
-						</a-menu-item>
 						<a-menu-item key="11">
-							<span class="sub-title">教师删除</span>
+							<span class="sub-title" @click="handleMenuChange('11', '0', '教师列表', 'RoleTecDetail', '')">教师列表</span>
+						</a-menu-item>
+						<a-menu-item key="12">
+							<span class="sub-title" @click="handleMenuChange('12', '0', '教师删除', 'RoleTecDelDetail', '')">教师删除</span>
 						</a-menu-item>
 					</a-sub-menu>
 				</a-sub-menu>
-				<a-menu-item key="12">
+				<a-menu-item key="13">
 					<i class="iconfont icon-tongji paddingRigTwenty icon-eighteen" />
 					统计页面
 				</a-menu-item>
@@ -99,7 +105,7 @@
 			})
 		},
 		mounted(){
-			console.log(this.$cookie.get('username'))
+			// console.log(this.$cookie.get('username'))
 		},
 		methods: {
 			...mapActions({
@@ -125,7 +131,9 @@
 				})
 				// 存在不向数组中插入数据
 				if(exsist.length !== 0){
+					// 设置当前击中的key与当前详情组件
 					this.$emit('activeKey', key+'')
+					this.setDetailCurrentComponent(this.leftBarList[key -1].component)
 					return
 				}else{
 					// 非折叠菜单子项

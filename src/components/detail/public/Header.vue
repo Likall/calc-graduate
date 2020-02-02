@@ -1,8 +1,8 @@
 <template>
 	<div class="headerContainer" v-if="currentUser.length > 0">
-		<div style="display: inline-block;" v-if="currentUser[0].role === '2'">
+		<div style="display: inline-block;">
 			<a-input-search 
-				:placeholder='placeHolderContent' 
+				:placeholder='placeData' 
 				@search="onSearch" 
 				enterButton 
 				size="large"/>
@@ -12,9 +12,12 @@
 </template>
 <script>
 	import FormWork from './FormWork'
-import { mapGetters } from 'vuex'
+	import { mapGetters } from 'vuex'
 	export default {
 		name: 'Header',
+		props: [
+			'placeData'
+		],
 		data() {
 			return {
 				placeHolderContent: '输入内容'
