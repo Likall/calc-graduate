@@ -27,6 +27,7 @@
 	import RoleTecDetail from '@/components/detail/user/RoleTecDetail'
 	import RoleTecDelDetail from '@/components/detail/user/RoleTecDelDetail'
 	import StudentDetailList from '@/components/detail/student/StudentDetailList'
+	import AchievmentAnalysis from '@/components/detail/achevement/AchievmentAnalysis'
 	import { mapGetters, mapActions } from 'vuex'
 	export default {
 		name: 'GuideDetail',
@@ -43,7 +44,8 @@
 			RoleStuDelDetail,
 			RoleTecDetail,
 			RoleTecDelDetail,
-			StudentDetailList
+			StudentDetailList,
+			AchievmentAnalysis
 		},
 		props: [
 			'tabs'

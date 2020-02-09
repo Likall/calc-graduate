@@ -12,12 +12,16 @@
 							name="file"
 							:multiple="false"
 							@change="handleFileChange"
-							action="http://localhost:8091/gacs/course/uploadfile"
+							action="http://localhost:8091/gacs/excel/grade"
 						>
 						<a-button type="primary" size="large"> <a-icon type="upload" />导入课程与学生关系文件</a-button>
 						</a-upload>
 					</div>	
 				</div>
+				<!-- 根据学生ID查询学生课程列表 -->
+				<list-by-stu-id></list-by-stu-id>
+				<!-- 根据课程名称查询学生情况 -->
+				<list-by-course-name></list-by-course-name>
 			</a-spin>
 		</div>
 		
@@ -27,9 +31,13 @@
 <script>
 	import { mapGetters, mapActions } from 'vuex'
 	import config from '@/api/config.js'
+	import ListByCourseName from './ListByCourseName'
+	import ListByStuId from './ListByStuId'
 	export default {
 		name: 'StudentGrade',
 		components: {
+			ListByCourseName,
+			ListByStuId
 		},
 		data(){
 			return {
@@ -101,6 +109,8 @@
 						if (response.data.data.total > 0){
 							let objStuId = {}
 							let objStuName = {}
+							objStuId[ 'index0'] = '课程编号'
+							objStuName['index0'] = '课程名称'
 							objStuId[ 'index1'] = '学号'
 							objStuName['index1'] = '姓名'
 							this.filterVal.push('index0')

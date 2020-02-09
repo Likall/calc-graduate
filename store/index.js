@@ -20,20 +20,6 @@ const state = {
 			icon: 'icon-guanxi',
 			component: 'RelDemandAndCourseDetail'
 		},
-		
-		{
-			title: '达成度',
-			key: '4',
-			icon: 'icon-tongji',
-			component: 'AchevementDetail'
-		},
-		{
-			title: '专业计划',
-			key: '5',
-			icon: 'icon-jihua',
-			component: 'PlanDetail'
-		},
-
 	],
 	detailCurrentComponent: '',					// 详情加载的组件
 	courseColumns: [],							// 课程模板文件列

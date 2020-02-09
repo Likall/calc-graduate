@@ -11,7 +11,7 @@
 							name="file"
 							:multiple="false"
 							@change="handleFileChange"
-							action="http://localhost:8091/gacs/course/uploadfile"
+							action="http://localhost:8091/gacs/excel/quota"
 						>
 						<a-button type="primary" size="large"> <a-icon type="upload" />导入指标点与课程关系文件</a-button>
 						</a-upload>

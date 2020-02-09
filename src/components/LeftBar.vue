@@ -36,6 +36,28 @@
 					<i class="iconfont paddingRigTwenty icon-eighteen" :class="item.icon"></i>
 					<span>{{item.title}}</span>
 				</a-menu-item>
+				<a-sub-menu key="sub2">
+					<span slot="title"><i class="iconfont icon-xuesheng paddingRigTwenty icon-tongji"/><span>达成度</span></span>
+					<a-menu-item key="15"
+						@click="handleMenuChange('15', '0', '达成度计算', 'AchevementDetail', '')">
+						<span class="sub-title">
+							达成度计算
+						</span>
+					</a-menu-item>
+					<a-menu-item key="16"
+						@click="handleMenuChange('16', '0', '达成度统计', 'AchievmentAnalysis', '')">
+						<span class="sub-title">
+							达成度统计
+						</span>
+					</a-menu-item>
+				</a-sub-menu>
+				<a-menu-item key="17"
+					@click="handleMenuChange('17', '0', '专业计划', 'PlanDetail', 'icon-jihua')">
+					<span class="sub-title">
+						<i class="iconfont icon-jihua paddingRigTwenty icon-eighteen" />
+						专业计划
+					</span>
+				</a-menu-item>
 			</a-menu>
 		</div>
 		<!-- 管理员 -->
@@ -132,8 +154,12 @@
 				// 存在不向数组中插入数据
 				if(exsist.length !== 0){
 					// 设置当前击中的key与当前详情组件
+					if(type === '0'){
+						this.setDetailCurrentComponent(com)
+					} else {
+						this.setDetailCurrentComponent(this.leftBarList[key -1].component)
+					}
 					this.$emit('activeKey', key+'')
-					this.setDetailCurrentComponent(this.leftBarList[key -1].component)
 					return
 				}else{
 					// 非折叠菜单子项

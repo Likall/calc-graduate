@@ -56,15 +56,15 @@
 				columns: [],
 				courseColumns: [			// 课程列表的列数
 					{
-						title: '课程号',
+						title: '课程编号',
 						dataIndex: 'courseId',
 						width: '25%',
 						scopedSlots: { customRender: 'courseId' },
 					},
 					{
-						title: '课程名',
+						title: '课程名称',
 						dataIndex: 'courseName',
-						width: '31%',
+						width: '29%',
 						scopedSlots: { customRender: 'courseName' },
 					},
 					{
@@ -94,7 +94,7 @@
 					{
 						title: '操作',
 						dataIndex: 'operation',
-						width: '12%',
+						width: '14%',
 						scopedSlots: { customRender: 'operation' },
 					},
 				],			
