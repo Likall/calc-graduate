@@ -2,7 +2,7 @@
 	<div class="courseDetailContainer">
 		<div class="content-box">
 			<!-- 搜索按钮 -->
-			<Header style="padding:10px 0px 0px 10px;" :placeData="placeData"></Header>
+			<Header style="padding:10px 0px 0px 10px;margin-top: 0px;" :placeData="placeData"></Header>
 			<!-- 列表 -->
 			<table-list 
 				:title="tabTitle"
@@ -156,7 +156,7 @@
 		box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
-		padding: 20px 15px;
+		padding: 15px;
 
 		.content-box{
 			position: relative;

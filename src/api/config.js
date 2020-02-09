@@ -8,4 +8,6 @@ export default {
 	DELETE_COURSE_INFO: APP_DOMAIN + '/course/deleteCourse',	// 删除课程
 	GET_ALL_STUDENT_LIST: APP_DOMAIN + '/student/list',		// 获得学生列表
 	GET_ALL_DEMAND2_LIST: APP_DOMAIN + '/demand/list',		// 获得指标点2列表
+	GET_QUOTA_CALCULATE: APP_DOMAIN + '/quota/calculate',	// 毕业达成度计算结果
+	GET_QOUTA_CACULATE_BY_D2ID: APP_DOMAIN + 'quota/list', // 获取二级毕业要求下的计算结果
 }
