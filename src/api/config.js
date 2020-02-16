@@ -10,4 +10,7 @@ export default {
 	GET_ALL_DEMAND2_LIST: APP_DOMAIN + '/demand/list',		// 获得指标点2列表
 	GET_QUOTA_CALCULATE: APP_DOMAIN + '/quota/calculate',	// 毕业达成度计算结果
 	GET_QOUTA_CACULATE_BY_D2ID: APP_DOMAIN + 'quota/list', // 获取二级毕业要求下的计算结果
+	GET_GRADE_SECTION: APP_DOMAIN + '/grade/gradeSection',	// 获取成绩分段
+	GET_GRADE_LIST: APP_DOMAIN + '/grade/list',	// 获取学生课程信息
+	GET_OVER_AVG_STU_INFO: APP_DOMAIN + '/course/overAvgStuInfo',	// 获取达到课程平均分人数的信息
 }

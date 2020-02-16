@@ -7,6 +7,7 @@ import header from './modules/header'
 import formwork from './modules/formwork'
 import student from './modules/student'
 import publicData from './modules/publicData'
+import course from './modules/course'
 Vue.use(Vuex)
 export default new Vuex.Store({
 	modules: {
@@ -14,7 +15,8 @@ export default new Vuex.Store({
 		header,
 		formwork,
 		student,
-		publicData
+		publicData,
+		course
 	},
 	plugins: [createPersistedState({
 		storage: window.localstorage,
