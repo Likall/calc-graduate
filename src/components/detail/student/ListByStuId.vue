@@ -9,7 +9,7 @@
 			mode="multiple"
 			:defaultValue="['a1', 'b2']"
 			style="width: 100%"
-			@change="handleChange"
+			@change="handleStudentChange"
 			placeholder="Please select"
 		>
 			<a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i"
@@ -28,7 +28,8 @@ export default {
 
 	},
 	methods: {
-		getStuCourseList(){}
+		getStuCourseList(){},
+		handleStudentChange(){}	
 	}
 }
 </script>

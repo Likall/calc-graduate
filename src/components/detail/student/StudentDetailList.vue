@@ -3,7 +3,7 @@
 	<!-- 学生页面首页 -->
 	<div class="studentDetailListContainer">
 		<div class="content-box">
-			<Header style="padding:10px 0px 0px 10px;" :placeData="placeData"></Header>
+			<Header style="padding:10px 0px 0px 10px; margin-top: 0" :placeData="placeData"></Header>
 			<!-- 列表 -->
 			<table-list 
 				:title="tabTitle"

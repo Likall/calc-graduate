@@ -136,6 +136,7 @@
 			...mapGetters({
 				currentUser: 'currentUser',			// 当前登录用户信息
 				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 当前详情加载的组件
+				courseList: 'course/courseList',		// 课程列表
 			})
 		},
 		watch: {
