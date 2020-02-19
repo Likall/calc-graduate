@@ -13,4 +13,8 @@ export default {
 	GET_GRADE_SECTION: APP_DOMAIN + '/grade/gradeSection',	// 获取成绩分段
 	GET_GRADE_LIST: APP_DOMAIN + '/grade/list',	// 获取学生课程信息
 	GET_OVER_AVG_STU_INFO: APP_DOMAIN + '/course/overAvgStuInfo',	// 获取达到课程平均分人数的信息
+	ADD_USER: APP_DOMAIN + '/user/add',		// 增加用户
+	GET_USER_STU_LIST: APP_DOMAIN + '/user/userlist',	// 获取学生用户列表
+	GET_USER_LIST: APP_DOMAIN + '/user/list',					// 获取所有用户列表
+	DELETE_USER: APP_DOMAIN + '/user/delete',					// 删除用户
 }

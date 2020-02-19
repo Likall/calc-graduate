@@ -1,16 +1,17 @@
 <template>
 	<div class="demandTableContainer" v-if="dataSource.length > 0">
-		<!-- 搜索按钮 -->
-		<Header style="padding: 10px 0 0 10px;"></Header>
-		<div class="title">
+		<div class="title" style="padding:0 10px">
 			<div class="divider"></div>
+			<h3>毕业要求列表</h3>
 		</div>
 		<div class="demand-table-box">
-			<a-table :columns="columns" :dataSource="dataSource" bordered :pagination="demandPagination">
+			<a-table :columns="columns" :dataSource="dataSource" bordered :pagination="demandPagination"
+			:rowClassName="(record, index) => { if(index % 2 === 1) return 'dark-row'}">
 				<template
 					v-for="col in columnData"
 					:slot="col"
-					slot-scope="text, record, index">
+					slot-scope="text, record, index"
+					>
 					<div :key="col">
 						<a-input
 							v-if="record.editable"
@@ -49,12 +50,11 @@
 			Header
 		},
 		props: [
-			
+			'dataSource',
+			'columns'
 		],
 		data() {
 			return {
-				columns: [],			// 表的列数
-				dataSource: [],			// 数据源
 				columnData: [],			// 组
 				oldTempRowData: {},		// 原行数据
 				demandPagination: {current: 1, total: 0, pageSize: 10, size: 'small'},      // 分页信息
@@ -134,10 +134,14 @@
 
 		.demand-table-box{
 			background-color: white;
+			padding: 0 10px;
 		}
 		
 		.divider{
 			margin-left: 0px;
+		}
+		/deep/ .dark-row {
+			background-color: #F7FDFF !important;
 		}
 	}
 </style>

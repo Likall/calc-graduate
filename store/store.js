@@ -8,6 +8,8 @@ import formwork from './modules/formwork'
 import student from './modules/student'
 import publicData from './modules/publicData'
 import course from './modules/course'
+import demand from './modules/demand'
+import user from './modules/user'
 Vue.use(Vuex)
 export default new Vuex.Store({
 	modules: {
@@ -16,7 +18,9 @@ export default new Vuex.Store({
 		formwork,
 		student,
 		publicData,
-		course
+		course,
+		demand,
+		user
 	},
 	plugins: [createPersistedState({
 		storage: window.localstorage,

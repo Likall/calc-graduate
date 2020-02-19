@@ -18,7 +18,7 @@
 					</div>
 				</div>
 				<!-- 列表 -->
-				<demand-table-list></demand-table-list>
+				<demand-table-list :dataSource="dataSource" :columns="columns"></demand-table-list>
 			</a-spin>
 		</div>
 	</div>
@@ -27,7 +27,9 @@
 	import StepDetail from '@/components/detail/public/StepDetail'
 	import DemandTableList from '@/components/detail/demand/DemandTableList'
 	
-	import { mapGetters } from 'vuex';
+	import config from '@/api/config.js' 
+	import { mapGetters, mapActions } from 'vuex'
+	import tools from '@/public/tools/tools'
 	import XLSX from 'xlsx'
 	export default {
 		name: 'DemandDetail',
@@ -39,24 +41,30 @@
 			return {
 				spinning: false,			// 是否开启loading
 				isSuccess: false,			// 导入文件是否成功
-				responseData: {},			// 接口返回数据
-				tableData: [],
-				colData: [],
-				originData: [
-					{"skuId":"00001","skuName":"nameSku0001","w00001":
-						{"warehouseId":"w00001","warehouseName":"仓库1","quantity":50,"lockQuantity":5,"availableQuantity":45},"w00002":{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195}
-						,"w00003":{"warehouseId":"w00003","warehouseName":"仓库3","quantity":40,"lockQuantity":1,"availableQuantity":39}},{"skuId":"00002","skuName":"nameSku0002","warehouseItem":[{"warehouseId":"w00001","warehouseName":"仓库1","quantity":100,"lockQuantity":5,"availableQuantity":95},{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},{"warehouseId":"w00003","warehouseName":"仓库3","quantity":5,"lockQuantity":5,"availableQuantity":0}],"w00001":{"warehouseId":"w00001","warehouseName":"仓库1","quantity":100,"lockQuantity":5,"availableQuantity":95},"w00002":{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},"w00003":{"warehouseId":"w00003","warehouseName":"仓库3","quantity":5,"lockQuantity":5,"availableQuantity":0}},{"skuId":"00003","skuName":"nameSku0003","warehouseItem":[{"warehouseId":"w00001","warehouseName":"仓库2","quantity":100,"lockQuantity":5,"availableQuantity":95},{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},{"warehouseId":"w00003","warehouseName":"仓库3","quantity":50,"lockQuantity":5,"availableQuantity":45}],"w00001":{"warehouseId":"w00001","warehouseName":"仓库2","quantity":100,"lockQuantity":5,"availableQuantity":95},"w00002":{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},"w00003":{"warehouseId":"w00003","warehouseName":"仓库3","quantity":50,"lockQuantity":5,"availableQuantity":45}}]
+				demandData: [],				// 毕业要求指标点列表
+				dataSource: [],
+				columns: [
+					{
+						title: '一级毕业要求',
+						dataIndex: 'demand1'
+					}
+				]
 			}
 		},
 		computed: {
 			...mapGetters({
 				currentUser: 'currentUser',				 // 当前登录用户信息
-				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 当前详情加载的组件
+				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 当前详情加载的组件\
+				demandList: 'demand/demandList',		// 毕业要求列表
 			})	
 		},
 		mounted(){
+			this.getDemandList()
 		},
 		methods: {
+			...mapActions({
+				setDemandList: 'demand/setDemandList',		// 设置毕业要求列表
+			}),
 			// 生成excel
 			exportSpecialExcel() {
 				var aoa = [
@@ -140,6 +148,73 @@
 					this.isSuccess = false;
 					this.spinning = false;
 				}
+			},
+
+			// 查询毕业要求列表
+			getDemandList(){
+				let self = this
+				self.axios.get(config.GET_ALL_DEMAND2_LIST).then(response =>{
+					if (response.data.code === '200'){
+						// 有数据
+						if (response.data.data.length > 0){
+							let responseData = response.data.data
+							// 设置毕业要求指标点与结果
+							self.demandData = responseData;
+							// 二级指标点长度-> 最长长度
+							let tempMaxLength = 0
+							for (let i = 0; i < responseData.length; i++) {
+								let objOfDemand1 = {}
+								// 设置最长长度
+								if (tempMaxLength < responseData[i].demand2List.length) {
+									tempMaxLength = responseData[i].demand2List.length;
+								}
+								// 设置数据源
+								objOfDemand1['demand1'] = responseData[i].name
+								// 排序
+								let sortNameArray = []
+								let sortCalcArray = []
+								for (let m = 0; m < responseData[i].demand2List.length; m++) {
+									let splitData = responseData[i].demand2List[m].name
+									sortNameArray.push(splitData)
+								}
+								// 排序后的名称
+								sortNameArray = sortNameArray.sort()
+								for (let n = 0; n < sortNameArray.length; n++) {
+									for (let k = 0; k < responseData[i].demand2List.length; k++) {
+										if (responseData[i].demand2List[k].name == sortNameArray[n]) {
+											objOfDemand1['index' + n] = sortNameArray[n];
+										}
+										
+									}
+								}
+								self.dataSource.push(objOfDemand1)
+							}
+							// 设置列
+							
+							for (let j = 0; j < tempMaxLength; j++) {
+								let tempObj = {}
+								if(j === 1) {
+									tempObj = {
+										'title': '二级毕业要求',
+										'dataIndex': 'index' + j,
+										'colSpan': tempMaxLength,
+									}
+									self.columns.push(tempObj)
+								} else {
+									tempObj = {
+										'title': '二级毕业要求',
+										'dataIndex': 'index'+j,
+										'colSpan': 0
+									}
+									self.columns.push(tempObj)
+								}
+								
+							}
+						}
+					} else {
+						self.$message.error('查询失败')
+					}
+				})
 			},
 			/**
 			* Introduction 向父组件传递当前击中的key

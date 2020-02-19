@@ -36,7 +36,7 @@
 				tableListSpinning: false,	// tab列表loading
 				columns: [],
 				dataSource: [],
-				tabTitle: '学生成绩列表',
+				tabTitle: '学生列表',
 				disablefBtn: true,
 				currentCom: 'StudentGrade',	// 当前组件名称
 				placeData: '输入学号',
@@ -65,7 +65,6 @@
 		},
 		mounted(){
 			if (this.detailCurrentComponent === 'StudentGrade') {
-				console.log("232323")
 				if (this.studentColumns.length !== 0 && this.studentData.length !== 0) {
 					this.disableOfBtn = false
 				}else {

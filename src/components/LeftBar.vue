@@ -53,7 +53,7 @@
 				</a-sub-menu>
 				<a-menu-item key="17"
 					@click="handleMenuChange('17', '0', '专业计划', 'PlanDetail', 'icon-jihua')">
-					<span class="sub-title">
+					<span class="title">
 						<i class="iconfont icon-jihua paddingRigTwenty icon-eighteen" />
 						专业计划
 					</span>
@@ -71,30 +71,9 @@
 						<i class="iconfont icon-renyuanguanli paddingRigTwenty icon-eighteen" />
 						<span>人员管理</span>
 					</span>
-					<a-sub-menu key="sub1-1" >
-						<span slot="title">
-							<i class="iconfont icon-xuesheng paddingRigTwenty icon-eighteen" />
-							<span class="sub-title">学生</span>
-						</span>
-						<a-menu-item key="9">
-							<span class="sub-title" @click="handleMenuChange('9', '0', '学生列表', 'RoleStuDetail', '')">学生列表</span>
-						</a-menu-item>
-						<a-menu-item key="10">
-							<span class="sub-title" @click="handleMenuChange('10', '0', '学生删除', 'RoleStuDelDetail', '')">学生删除</span>
-						</a-menu-item>
-					</a-sub-menu>
-					<a-sub-menu key="sub1-2" >
-						<span slot="title">
-							<i class="iconfont icon-jiaoshi paddingRigTwenty icon-eighteen" />
-							<span>教师</span>
-						</span>
-						<a-menu-item key="11">
-							<span class="sub-title" @click="handleMenuChange('11', '0', '教师列表', 'RoleTecDetail', '')">教师列表</span>
-						</a-menu-item>
-						<a-menu-item key="12">
-							<span class="sub-title" @click="handleMenuChange('12', '0', '教师删除', 'RoleTecDelDetail', '')">教师删除</span>
-						</a-menu-item>
-					</a-sub-menu>
+					<a-menu-item key="9">
+						<span class="sub-title" @click="handleMenuChange('9', '0', '人员列表', 'RoleStuDetail', '')">人员列表</span>
+					</a-menu-item>
 				</a-sub-menu>
 				<a-menu-item key="13">
 					<i class="iconfont icon-tongji paddingRigTwenty icon-eighteen" />
