@@ -17,6 +17,7 @@
 						</a-upload>
 					</div>
 				</div>
+				<rel-demand-and-course-table></rel-demand-and-course-table>
 			</a-spin>
 		</div>
 	</div>
@@ -25,11 +26,12 @@
 	import Header from '@/components/detail/public/Header'
 	import config from '@/api/config.js'
 	import { mapGetters } from 'vuex'
+	import RelDemandAndCourseTable from '@/components/detail/reldemandcourse/RelDemandCourseTable'
 	export default {
 		name: 'RelDemandAndCourseDetail',
 		components: {
 			Header,
-			
+			RelDemandAndCourseTable
 		},
 		data(){
 			return {
@@ -103,16 +105,31 @@
 							this.filterVal.push('index0')
 							this.filterVal.push('index1')
 							let tempLength = 0
+							objDemand2Id[ 'index0'] = '指标'
+							objDemand2Id[ 'index1'] = '指标名'
+							objDemand2Name[ 'index0'] = '课程'
+							objDemand2Name[ 'index1'] = '课程名'
 							// 一级毕业要求
 							for(let i = 0; i < response.data.data.length; i++){
 								console.log(response.data.data)
 								let demand2List = response.data.data[i].demand2List
-								console.log(demand2List)
-								for(let j = 0; j < demand2List.length; j++){
-									objDemand2Id[ 'index' + (tempLength+j+2) ] = demand2List[j].demand2Id
-									objDemand2Name[ 'index' + (tempLength+j+2) ] = demand2List[j].name
-									let tempName = ['index' + (tempLength+j+2)]
-									this.filterVal.push(tempName)
+								let demandNameSortArray = []
+								for (let k = 0; k < demand2List.length; k++) {
+									// 以名称排序
+									demandNameSortArray.push(response.data.data[i].demand2List[k].name)
+								}
+								// 排序
+								demandNameSortArray = demandNameSortArray.sort()
+								for(let m = 0; m < demandNameSortArray.length; m++) {
+									for(let j = 0; j < demand2List.length; j++){
+										if(demandNameSortArray[m] === demand2List[j].name){
+											objDemand2Id[ 'index' + (tempLength+m+2) ] = demand2List[j].demand2Id
+											objDemand2Name[ 'index' + (tempLength+m+2) ] = demand2List[j].name
+											let tempName = ['index' + (tempLength+m+2)]
+											this.filterVal.push(tempName)
+										}
+								}
+									
 								}
 								tempLength += demand2List.length ;
 								
@@ -162,10 +179,10 @@
 				require.ensure([], () => {
 					const { export_json_to_excel } = require("../../../excel/Export2Excel");
  
-				    const tHeader = ['注意: 按格式填写,勿修改已填写的模板内容(课程名和指标点对应处填写权重值)']; //将对应的属性名转换成中文
+				    const tHeader = ['注意: 按格式填写,勿修改已填写的模板内容(课程名和指标点对应处填写权重值),没有值处以 0 填充']; //将对应的属性名转换成中文
 				    const list = this.dataSource;　　
-					const　filterVal = this.filterVal　　　
-					const data = this.formatJson(filterVal, list);
+						const filterVal = this.filterVal　　　
+						const data = this.formatJson(filterVal, list);
 				    export_json_to_excel(tHeader, data, '指标点与课程关系模板');　
 				});
 			},

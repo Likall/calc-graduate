@@ -5,19 +5,20 @@
 			<h3>毕业要求列表</h3>
 		</div>
 		<div class="demand-table-box">
-			<a-table :columns="columns" :dataSource="dataSource" bordered :pagination="demandPagination"
+			<a-table :columns="columns" :dataSource="dataSource" bordered :pagination="demandPagination" :scroll="{ x: 1300, y: 300}"
 			:rowClassName="(record, index) => { if(index % 2 === 1) return 'dark-row'}">
 				<template
-					v-for="col in columnData"
+					v-for="col in colData"
 					:slot="col"
 					slot-scope="text, record, index"
 					>
 					<div :key="col">
-						<a-input
+						<a-textarea
+							autosize 
 							v-if="record.editable"
 							style="margin: -5px 0"
 							:value="text"
-							@change="e => handleChange(e.target.value, record.key, col)"/>
+							@change="e => handleChange(e.target.value, record.key, col)"></a-textarea>
 						<template v-else>{{text}}</template>
 					</div>
 				</template>
@@ -42,7 +43,9 @@
 		</div>
 	</div>
 </template>
+
 <script>
+	import tools from '@/public/tools/tools'
 	import Header from '@/components/detail/public/Header'
 	export default {
 		name: 'DemandTableList',
@@ -51,13 +54,16 @@
 		},
 		props: [
 			'dataSource',
-			'columns'
+			'columns',
+			'colData'
 		],
 		data() {
+			this.cacheData = this.dataSource.map(item => ({ ...item }));
 			return {
-				columnData: [],			// 组
+				oldDataSource: [],			// 原数据源
+				newDataSource: [],		// 更新后的数据源
 				oldTempRowData: {},		// 原行数据
-				demandPagination: {current: 1, total: 0, pageSize: 10, size: 'small'},      // 分页信息
+				demandPagination: {current: 1, total: 0, pageSize: 15, size: 'small'},      // 分页信息
 			}
 		},
 		mounted() {
@@ -65,24 +71,28 @@
 		methods: {
 			// 处理输入框事件更改事件
 			handleChange(value, key, column) {
+				// 设置数据源
 				const newData = [...this.dataSource];
 				const target = newData.filter(item => key === item.key)[0];
 				if (target) {
 					target[column] = value;
-					this.dataSource = newData;
+					// // 更新父组件数据源数据
+					this.$emit('updateDemand', newData)
 				}
 			},
+
+
 
 			// 点击编辑按钮事件
 			edit(index) {
 				// 编辑时 -> 存储未更改数据，为取消事件返回原数据
-				this.oldTempRowData = this.dataSource[index]
 				const newData = [...this.dataSource];
 				const target = newData.filter((item, i) => index === i);
 				// 设置该行可编辑
 				if (target) {
 					target[0].editable = true;
-					this.dataSource = newData;
+					// 更新父组件数据源数据
+					this.$emit('updateDemand', newData)
 				}
 			},
 
@@ -94,7 +104,8 @@
 				const target = newData.filter((item,i) => index === i);
 				if (target) {
 					delete target[0].editable;
-					this.dataSource = newData;
+					// 更新父组件数据源数据
+					this.$emit('updateDemand', newData, '', index)
 				}
 			},
 
@@ -103,9 +114,10 @@
 				const newData = [...this.dataSource];
 				const target = newData.filter((item,i) => index === i);
 				if (target) {
-					newData[index] = this.oldTempRowData
+					Object.assign(target, this.cacheData.filter((item,i) => index === i));
 					delete target[0].editable;
-					this.dataSource = newData;
+					// 更新父组件数据源数据
+					this.$emit('updateDemand', newData, index)
 				}
 			},
 

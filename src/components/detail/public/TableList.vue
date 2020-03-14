@@ -8,7 +8,7 @@
 			<div class="course-table-box">
 				<a-table :columns="columns" :dataSource="dataSource" bordered :pagination="Pagination" @change="handleTableChange">
 					<template
-						v-for="col in ['courseName', 'courseCredit', 'courseTerm', 'courseAverage', 'courseTotalGrade']"
+						v-for="col in colData"
 						:slot="col"
 						slot-scope="text, record, index">
 						<div :key="col">
@@ -44,12 +44,13 @@
 </template>
 <script>
 	import config from '@/api/config.js'
-	import { mapGetters } from 'vuex'
+	import { mapGetters, mapActions } from 'vuex'
 	export default {
 		name: 'TableList',
 		props: [
 			'title',
-			'com'
+			'com',
+			'isSuccess'
 		],
 		data(){
 			return {
@@ -103,7 +104,6 @@
 						title: '学号',
 						dataIndex: 'stuId',
 						width: '25%',
-						scopedSlots: { customRender: 'stuId' },
 					},
 					{
 						title: '姓名',
@@ -130,6 +130,8 @@
 				oldTempRowData: {},		// 原行数据
 				Pagination: {current: 1, total: 0, pageSize: 10, pageNum: 1, pages: 0},			// 分页信息
 				tableListSpinning: false,	// table列表loading
+				colData: [],
+				currentRowData: {},			// 当前列表修改值
 			}
 		},
 		computed:{
@@ -137,6 +139,7 @@
 				currentUser: 'currentUser',			// 当前登录用户信息
 				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 当前详情加载的组件
 				courseList: 'course/courseList',		// 课程列表
+				studentList: 'student/studentList',		// 课程列表信息
 			})
 		},
 		watch: {
@@ -151,6 +154,17 @@
 						this.columns = this.studentColumns
 					}
 				}
+			},
+			isSuccess(New, Old) {
+				if(this.com === 'CourseDetail'){
+					this.getCourseInfo(config.GET_ALL_COURSE_LIST)
+					this.columns = this.courseColumns
+					this.colData = ['courseName', 'courseCredit', 'courseTerm', 'courseAverage', 'courseTotalGrade']
+				} else if (this.com === 'StudentGrade') {
+					this.getCourseInfo(config.GET_ALL_STUDENT_LIST)
+					this.columns = this.studentColumns
+					this.colData = ['stuId', 'stuName', 'stuMale']
+				}
 			}
 		},
 		mounted(){
@@ -158,12 +172,18 @@
 			if(this.com === 'CourseDetail'){
 				this.getCourseInfo(config.GET_ALL_COURSE_LIST)
 				this.columns = this.courseColumns
+				this.colData = ['courseName', 'courseCredit', 'courseTerm', 'courseAverage', 'courseTotalGrade']
 			} else if (this.com === 'StudentGrade') {
 				this.getCourseInfo(config.GET_ALL_STUDENT_LIST)
 				this.columns = this.studentColumns
+				this.colData = ['stuId', 'stuName', 'stuMale']
 			}
 		},
 		methods: {
+			...mapActions({
+				setStudentList: 'student/setStudentList',			// 设置学生列表
+				setCourseList: 'course/setCourseList',				// 设置课程列表
+			}),
 			// 获取列表数据
 			getCourseInfo(url){
 				let self = this
@@ -228,8 +248,11 @@
 
 			// 处理输入框事件更改事件
 			handleChange(value, key, column) {
+				
 				const newData = [...this.dataSource];
 				const target = newData.filter(item => key === item.key)[0];
+				// 1. 设置当前值
+				this.currentRowData = target
 				if (target) {
 					target[column] = value;
 					this.dataSource = newData;
@@ -238,7 +261,7 @@
 			// 点击编辑按钮事件
 			edit(index) {
 				// 编辑时 -> 存储未更改数据，为取消事件返回原数据
-				this.oldTempRowData = this.dataSource[index]
+				this.oldTempRowData = {...this.dataSource[index]}
 				const newData = [...this.dataSource];
 				const target = newData.filter((item, i) => index === i);
 				// 设置该行可编辑
@@ -255,11 +278,40 @@
 				this.oldTempRowData = {}
 				const target = newData.filter((item,i) => index === i);
 				if (target) {
+					this.updateData()
 					delete target[0].editable;
 					this.dataSource = newData;
 				}
 			},
 
+			// 更新数据
+			updateData(){
+				let self = this
+				let restData
+				if (this.com === 'CourseDetail') {
+					// restDate = {
+					// 	courseId: 
+					// 	courseName: 
+						
+					// }
+				}
+				else if (this.com === 'StudentGrade'){
+					restData = {
+						stuId: this.currentRowData.stuId,
+						stuName: this.currentRowData.stuName,
+						stuMale: this.currentRowData.stuMale
+					}
+					self.axios.post(config.UPDATE_STUDENT, restData).then(response => {
+						if (response.data.code === '200') {
+							this.$message.success(response.data.msg)
+						} else {
+							this.$message.error(response.data.msg)
+						}
+						// 开启loading
+					}) 
+				}
+				this.tableListSpinning = false
+			},
 			// 编辑后取消修改事件
 			cancel(index) {
 				const newData = [...this.dataSource];

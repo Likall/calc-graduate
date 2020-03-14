@@ -19,9 +19,11 @@
 					</div>	
 				</div>
 				<!-- 根据学生ID查询学生课程列表 -->
-				<list-by-stu-id></list-by-stu-id>
+				<!-- <list-by-stu-id></list-by-stu-id> -->
 				<!-- 根据课程名称查询学生情况 -->
-				<list-by-course-name></list-by-course-name>
+				<!-- <list-by-course-name></list-by-course-name> -->
+				<!-- 成绩列表 -->
+				<student-grade-table-list></student-grade-table-list>
 			</a-spin>
 		</div>
 		
@@ -33,17 +35,24 @@
 	import config from '@/api/config.js'
 	import ListByCourseName from './ListByCourseName'
 	import ListByStuId from './ListByStuId'
+	import StudentGradeTableList from '@/components/detail/student/StudentGradeTableList'
+	import tools from '@/public/tools/tools'
 	export default {
 		name: 'StudentGrade',
 		components: {
 			ListByCourseName,
-			ListByStuId
+			ListByStuId,
+			StudentGradeTableList
 		},
 		data(){
 			return {
 				dataSource: [],					// 生成excel的数据源
 				filterVal: [],					// 列数据
 				spinning: false,				// loading
+				// columnsData: [],				// 列数据
+				// tableDataSource: [],			// 列表数据源
+				// scollWidth: '',
+				// colColumns: []
 			}
 		},
 		computed: {
@@ -53,6 +62,8 @@
 				detailCurrentComponent: 'publicData/detailCurrentComponent',    // 当前详情加载的组件
 				studentColumns: 'studentColumns',								// 学生模板文件列
 				studentData: 'studentData',										// 学生模板文件数据
+				courseList: 'course/courseList',								// 课程列表
+				studentList: 'student/studentList',								// 学生列表
 			})
 		},
 		watch:{
@@ -62,6 +73,8 @@
 		methods: {
 			...mapActions({
 				setStudentGradeList: 'student/setStudentGradeList',			// 设置学生成绩列表
+				setCourseList: 'course/setCourseList',						// 设置课程列表
+				setStudentList: 'student/setStudentList',					// 设置学生列表
 			}),
 
 			// 获取课程列表数据
@@ -76,7 +89,8 @@
 					if (response.data.code === '200'){
 						// 有数据
 						if (response.data.data.total > 0){
-							
+							// 设置课程列表数据
+							self.setCourseList(response.data.data.list)
 							for(let i = 0; i < response.data.data.list.length; i++){
 								let objCourse = {}
 								objCourse[ 'index0'] = response.data.data.list[i].courseId
@@ -107,6 +121,8 @@
 					if (response.data.code === '200'){
 						// 有数据
 						if (response.data.data.total > 0){
+							// 设置学生列表数据
+							self.setStudentList(response.data.data.list)
 							let objStuId = {}
 							let objStuName = {}
 							objStuId[ 'index0'] = '课程编号'
@@ -156,6 +172,8 @@
 					this.$message.error('上传失败');
 				}
 			},
+
+			
 		}
 	}
 </script>

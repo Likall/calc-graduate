@@ -65,8 +65,6 @@
 						</form>
 					</div>
 				</div>
-				
-				
 			</div>
 		</div>
 	</div>
@@ -78,7 +76,7 @@
 		name: 'UserIndex',
 		data() {
 			return {
-				userInfoForm: this.$form.createForm(this, { name: 'userInfo' }),			// 表单	
+				userInfoForm: this.$form.createForm(this, { name: 'userInfo' }),			// 表单
 				selectIndex: 0,																// 下拉列表选中index
 				currentRole: '',															// 
 				selectItem: ['管理员', '教师', '学生'],									// 下拉列表

@@ -27,6 +27,11 @@ export default {
         
     },
     methods: {
+        /**
+        * Introduction 	获取毕业达成度指标点 -> 设置折线图X轴数据与数据源
+        * @author 刘莉
+        * @since 1.0
+        */
         getQuotaCal(){
             let self = this
             self.axios.get(config.GET_ALL_DEMAND2_LIST).then(response =>{
@@ -58,7 +63,11 @@ export default {
             })
         },
 
-        // 毕业达成度折线图设置
+        /**
+        * Introduction 	毕业达成度折线图设置
+        * @author 刘莉
+        * @since 1.0
+        */
         drawLineEcarts(){
             // 获取容器
             let myChart = this.$echarts.init(document.getElementById('echarts1'))
