@@ -18,7 +18,7 @@
 					</div>
 				</div>
 				<!-- 列表 -->
-				<demand-table-list></demand-table-list>
+				<demand-table-list :dataSource="changeDataSource" :columns="columns" :colData="colData" @updateDemand="updateDemand"></demand-table-list>
 			</a-spin>
 		</div>
 	</div>
@@ -27,7 +27,9 @@
 	import StepDetail from '@/components/detail/public/StepDetail'
 	import DemandTableList from '@/components/detail/demand/DemandTableList'
 	
-	import { mapGetters } from 'vuex';
+	import config from '@/api/config.js' 
+	import { mapGetters, mapActions } from 'vuex'
+	import tools from '@/public/tools/tools'
 	import XLSX from 'xlsx'
 	export default {
 		name: 'DemandDetail',
@@ -39,24 +41,37 @@
 			return {
 				spinning: false,			// 是否开启loading
 				isSuccess: false,			// 导入文件是否成功
-				responseData: {},			// 接口返回数据
-				tableData: [],
-				colData: [],
-				originData: [
-					{"skuId":"00001","skuName":"nameSku0001","w00001":
-						{"warehouseId":"w00001","warehouseName":"仓库1","quantity":50,"lockQuantity":5,"availableQuantity":45},"w00002":{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195}
-						,"w00003":{"warehouseId":"w00003","warehouseName":"仓库3","quantity":40,"lockQuantity":1,"availableQuantity":39}},{"skuId":"00002","skuName":"nameSku0002","warehouseItem":[{"warehouseId":"w00001","warehouseName":"仓库1","quantity":100,"lockQuantity":5,"availableQuantity":95},{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},{"warehouseId":"w00003","warehouseName":"仓库3","quantity":5,"lockQuantity":5,"availableQuantity":0}],"w00001":{"warehouseId":"w00001","warehouseName":"仓库1","quantity":100,"lockQuantity":5,"availableQuantity":95},"w00002":{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},"w00003":{"warehouseId":"w00003","warehouseName":"仓库3","quantity":5,"lockQuantity":5,"availableQuantity":0}},{"skuId":"00003","skuName":"nameSku0003","warehouseItem":[{"warehouseId":"w00001","warehouseName":"仓库2","quantity":100,"lockQuantity":5,"availableQuantity":95},{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},{"warehouseId":"w00003","warehouseName":"仓库3","quantity":50,"lockQuantity":5,"availableQuantity":45}],"w00001":{"warehouseId":"w00001","warehouseName":"仓库2","quantity":100,"lockQuantity":5,"availableQuantity":95},"w00002":{"warehouseId":"w00002","warehouseName":"仓库2","quantity":200,"lockQuantity":5,"availableQuantity":195},"w00003":{"warehouseId":"w00003","warehouseName":"仓库3","quantity":50,"lockQuantity":5,"availableQuantity":45}}]
+				demandData: [],				// 毕业要求指标点列表
+				dataSource: [],
+				columns: [
+					{
+						'title': '一级毕业要求',
+						'dataIndex': 'demand1',
+						'fixed': 'left',
+						'width': 200,
+						'scopedSlots': { customRender: 'demand1' },
+					}
+				],
+				colData: ['demand1'],				// template for table
+				changeDataSource: [],
 			}
 		},
 		computed: {
 			...mapGetters({
 				currentUser: 'currentUser',				 // 当前登录用户信息
-				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 当前详情加载的组件
+				detailCurrentComponent: 'publicData/detailCurrentComponent',	// 当前详情加载的组件\
+				demandList: 'demand/demandList',		// 毕业要求列表
+				originDataSource: 'demand/originDataSource',	// 数据源
 			})	
 		},
 		mounted(){
+			this.getDemandList()
 		},
 		methods: {
+			...mapActions({
+				setDemandList: 'demand/setDemandList',		// 设置毕业要求列表
+				setOriginDataSource: 'demand/setOriginDataSource', // 设置毕业要求数据源
+			}),
 			// 生成excel
 			exportSpecialExcel() {
 				var aoa = [
@@ -135,11 +150,108 @@
 					this.spinning = false;
 					// 执行成功
 					this.responseData = info.file.response
+					this.getDemandList();
 				} else if (info.file.status === 'error') {
 					this.$message.error('上传失败');
 					this.isSuccess = false;
 					this.spinning = false;
 				}
+			},
+
+			// 查询毕业要求列表
+			getDemandList(){
+				let self = this
+				self.axios.get(config.GET_ALL_DEMAND2_LIST).then(response =>{
+					if (response.data.code === '200'){
+						// 有数据
+						if (response.data.data.length > 0){
+							let responseData = response.data.data
+							// 设置毕业要求指标点与结果
+							self.demandData = responseData;
+							// 二级指标点长度-> 最长长度
+							let tempMaxLength = 0
+							for (let i = 0; i < responseData.length; i++) {
+								let objOfDemand1 = {}
+								// 设置最长长度
+								if (tempMaxLength < responseData[i].demand2List.length) {
+									tempMaxLength = responseData[i].demand2List.length;
+								}
+								// 设置数据源
+								objOfDemand1['demand1'] = responseData[i].name
+								objOfDemand1['key'] = responseData[i].demand1Id
+								// 排序
+								let sortNameArray = []
+								let sortCalcArray = []
+								for (let m = 0; m < responseData[i].demand2List.length; m++) {
+									let splitData = responseData[i].demand2List[m].name
+									sortNameArray.push(splitData)
+								}
+								// 排序后的名称
+								sortNameArray = sortNameArray.sort()
+								// let tempDemand2List = tools.deepClone(sortNameArray)
+								let tempDemand2List = []
+								// 设置排序后的毕业要求数据
+								for (let n = 0; n < sortNameArray.length; n++) {
+									let obj = {
+										name: sortNameArray[n]
+									}
+									for (let k = 0; k < responseData[i].demand2List.length; k++) {
+										if (responseData[i].demand2List[k].name == sortNameArray[n]) {
+											objOfDemand1['index' + n] = sortNameArray[n];
+											obj.demand2Id = responseData[i].demand2List[k].demand2Id
+										}
+										
+									}
+									tempDemand2List.push(obj)
+									
+								}
+								// 设置毕业要求列表
+								
+								self.demandData[i].demand2List = tempDemand2List
+								self.setDemandList(self.demandData)
+								self.dataSource.push(objOfDemand1)
+							}
+							self.changeDataSource = tools.deepClone(self.dataSource)
+							self.setOriginDataSource(self.dataSource)
+
+							// 设置列
+							
+							for (let j = 0; j < tempMaxLength; j++) {
+								let tempObj = {}
+								if(j === 1) {
+									tempObj = {
+										'title': '二级毕业要求',
+										'dataIndex': 'index' + j,
+										'colSpan': tempMaxLength,
+										'scopedSlots': { customRender: 'index' + j },
+									}
+									self.columns.push(tempObj)
+								} else {
+									tempObj = {
+										'title': '二级毕业要求',
+										'dataIndex': 'index'+j,
+										'colSpan': 0,
+										'scopedSlots': { customRender: 'index'+j },
+									}
+									self.columns.push(tempObj)
+								}
+								self.colData.push('index' + j)
+								
+							}
+							let operatObj = {
+								'title': '操作',
+								'dataIndex': 'operation',
+								'colSpan': 1,
+								'fixed': 'right',
+								'width': 150,
+								scopedSlots: { customRender: 'operation' },
+							}
+							self.columns.push(operatObj)
+						}
+					} else {
+						self.$message.error('查询失败')
+					}
+				})
 			},
 			/**
 			* Introduction 向父组件传递当前击中的key
@@ -150,6 +262,86 @@
 			setActiveKey(key){
 				// 设置当前击中key
 				this.$emit('activeKey', key+'')
+			},
+
+			/**
+			* Introduction 接收父组件传递过来的值
+			* @author 刘莉
+			* @since 1.0
+			* @param {data} 从demandtablelist接收的数据源 
+			* @param {index} 取消行的下标
+			* @param {indexOfSave} 保存的下标
+			*/
+			updateDemand(data, index, indexOfSave) {
+				console.log(data,index, indexOfSave)
+				// 取消修改，还原
+				if (index !=='' && index !== null && index !== 'undefined' && typeof index !== 'undefined') {
+					this.changeDataSource = [...data]
+					this.changeDataSource[index] = {...this.dataSource[index]}
+				}
+				// 保存
+				else if (indexOfSave !=='' && indexOfSave !== null && indexOfSave !== 'undefined' && typeof indexOfSave !== 'undefined') {
+					this.updateDemandsTotal(indexOfSave, data)
+				}
+				else {
+					this.changeDataSource = data
+				}
+			},
+
+			/**
+			* Introduction 更新指标点
+			* @author 刘莉
+			* @since 1.0
+			* @param {index} 更新的下标
+			*/
+			updateDemandsTotal(index, data) {
+				let self = this
+				// 一级指标点ID
+				let demand1Id = this.dataSource[index].key
+				// 一级指标点名称
+				let demand1Name = this.changeDataSource[index].demand1
+				// 设置参数
+				let demand2List = self.setDemandResData(index)
+				let resData = {
+					demand1Id: demand1Id,
+					name: demand1Name,
+					demand2List
+				}
+				// 更新值
+				self.axios.post(config.UPDATE_DEMAND, resData).then(response => {
+					if (response.data.code === 200) {
+						self.$message.success(response.data.msg)
+						self.changeDataSource = data
+						// 更新dataSource值
+						self.dataSource[index] = {...self.changeDataSource[index]}
+						self.changeDataSource = tools.deepClone(self.dataSource)
+						self.setOriginDataSource(self.changeDataSource)
+					} else {
+						self.$message.success(response.data.msg)
+						self.changeDataSource[index] = {...self.dataSource[index]}
+					}
+				})
+			},
+
+			/**
+			* Introduction 设置参数
+			* @author 刘莉
+			* @since 1.0
+			* @param {index} 下标
+			*/
+			setDemandResData(index) {
+				// 设置二级指标点
+				let array = []
+				let obj = {}
+				for (let i = 0; i < this.demandData[index].demand2List.length; i++) {
+					let keyName = 'index'+i
+					obj = {
+						demand2Id: this.demandData[index].demand2List[i].demand2Id,
+						name: this.changeDataSource[index][keyName]
+					}
+					array.push(obj)
+				}
+				return array
 			}
 		}
 	}

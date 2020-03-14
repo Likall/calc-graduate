@@ -6,6 +6,7 @@ const state = {
 	courseAverage: [],		// 课程平均分
 	courseName: [],				// 课程名称
 	overAvgStuInfo: [],			// 达到课程平均分的学生信息
+	courseDemandList: [],		// 课程指标点列表
 }
 var getters = {
 	courseList: state => {
@@ -22,6 +23,9 @@ var getters = {
 	  },
 	overAvgStuInfo: state => {
 		return state.overAvgStuInfo
+	},
+	courseDemandList: state => {
+		return state.courseDemandList
 	},
 }
 
@@ -60,6 +64,13 @@ const actions = {
         state
     }, value) => {
         commit(types.SET_OVERAVGSTUINFO, value)
+	  },
+	// 设置课程指标点列表
+	setCourseDemandList: ({
+        commit,
+        state
+    }, value) => {
+        commit(types.SET_COURSEDEMANDLIST, value)
   	},
 }
 
@@ -79,7 +90,9 @@ const mutations = {
 	[types.SET_OVERAVGSTUINFO](state, value) {
         state.overAvgStuInfo = value
 	},
-	
+	[types.SET_COURSEDEMANDLIST](state, value) {
+        state.courseDemandList = value
+	},
 	  
 }
 

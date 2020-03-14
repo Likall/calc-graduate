@@ -1,14 +1,31 @@
 <template>
 	<div class="courseDetailContainer">
 		<div class="content-box">
-			<!-- 搜索按钮 -->
-			<Header style="padding:10px 0px 0px 10px;margin-top: 0px;" :placeData="placeData"></Header>
-			<!-- 列表 -->
-			<table-list 
-				:title="tabTitle"
-				:com="currentCom"
-				style="padding:10px 0px 0px 10px;">
-			</table-list>
+			<a-spin :spinning="spinning" tip="正在生成模板文件,请等待....">
+				<div class="btn-form">
+					<a-button @click="exportExcel" size="large"><a-icon type="download" />下载课程信息模板</a-button>
+					<div class="uploadContainer">
+						<!-- 导入文件 -->
+						<a-upload
+							name="file"
+							:multiple="false"
+							@change="handleFileChange"
+							action="http://localhost:8091/gacs/excel/course"
+						>
+						<a-button type="primary" size="large"> <a-icon type="upload" />导入课程信息文件</a-button>
+						</a-upload>
+					</div>	
+				</div>
+				<!-- 搜索按钮 -->
+				<Header style="padding:10px 0px 0px 10px;margin-top: 0px;" :placeData="placeData"></Header>
+				<!-- 列表 -->
+				<table-list 
+					:title="tabTitle"
+					:com="currentCom"
+					:isSuccess="isSuccess"
+					style="padding:10px 0px 0px 10px;">
+				</table-list>
+			</a-spin>
 		</div>
 	</div>
 </template>
@@ -92,6 +109,30 @@
 			// this.getCourseInfoList()
 		},
 		methods: {
+			exportExcel(){
+				require.ensure([], () => {
+					const { export_json_to_excel } = require("../../../excel/Export2Excel");
+ 
+				    const tHeader = ['课程ID', '课程名', '学分', '学期', '平均分', '总分制']; //将对应的属性名转换成中文
+					const filterVal = ['courseId', 'courseName', 'courseCreit', 'trem', 'total', 'average']　　
+					// const list =[
+					// 	{
+					// 		courseId:'课程ID',
+					// 		courseName: '课程名',
+					// 		courseCreit: '学分',
+					// 		trem:'学期',
+					// 		total: '总分制',
+					// 		average: '平均分'
+					// 	},
+					// ]
+					const data = []
+				    export_json_to_excel(tHeader, data, '课程信息模板');　
+				});
+			},
+
+			formatJson(filterVal, jsonData) {
+				return jsonData.map(v => filterVal.map(j => v[j]));
+			},
 			// 处理文件上传
 			handleFileChange(info){
 				this.spinning = true;
@@ -163,6 +204,23 @@
 			width: 100%;
 			height: 100%;
 			background-color: white;
+
+			.btn-form{
+				display: flex;
+				justify-content: flex-start;
+				position: relative;
+				width: 100%;
+				padding: 10px;
+
+				button{
+					margin-right: 15px;
+				}
+
+				.uploadContainer{
+					display: inline-block; 
+					position: relative; 
+				}
+			}
 		}
 	}
 </style>

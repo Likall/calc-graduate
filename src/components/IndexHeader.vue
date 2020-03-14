@@ -35,6 +35,9 @@
 							<a href="javascript:;" @click="goUserIndex('8', '个人中心', 'UserIndex')">个人中心</a>
 						</a-menu-item>
 						<a-menu-item>
+							<a href="javascript:;" @click="goUserIndex('20', '密码修改', 'UpdatePsw')">密码修改</a>
+						</a-menu-item>
+						<a-menu-item>
 							<a href="javascript:;" class="logout" @click="logout">
 								退出登录
 								<i class="iconfont icon-tuichu icon-twelve"></i>

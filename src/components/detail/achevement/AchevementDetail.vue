@@ -76,7 +76,11 @@
 			this.getQuotaCal();
 		},
 		methods: {
-			// 获取毕业要求指标点
+			/**
+			* Introduction 	获取毕业要求指标点
+			* @author 刘莉
+			* @since 1.0
+			*/
 			getDemandList(){
 				let self = this;
 				self.axios.get(config.GET_ALL_DEMAND2_LIST).then(response =>{
@@ -157,7 +161,12 @@
 					}
 				})
 			},
-			// 获取毕业达成度
+
+			/**
+			* Introduction 	获取毕业达成度指标点
+			* @author 刘莉
+			* @since 1.0
+			*/
 			getQuotaCal(){
 				let self = this
 				this.demand2IdList = []
@@ -184,8 +193,11 @@
 					}
 				})
 			},
-
-			// 将二级指标点ID和内容存储
+			/**
+			* Introduction 	将二级指标点ID和内容存储
+			* @author 刘莉
+			* @since 1.0
+			*/
 			saveDemand2Info(i, array){
 				this.demand2Columns.push({
 					'title': '毕业要求',

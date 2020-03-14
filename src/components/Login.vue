@@ -17,7 +17,7 @@
 									<a-input placeholder="username"
 										v-decorator="
 											['username', 
-												{ rules: [{ required: true, message: '请输入用户名' }] 
+												{ rules: [{ required: true, message: '请输入登录账号' }] 
 										}]"
 										@change="handleUserNameChange"/>
 								</a-form-item>
