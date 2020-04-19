@@ -2,7 +2,7 @@
 	<div class="leftBarContainer"
 		:class="collapsed === false ? 'collapsed' : 'notcollapsed'">
 		<!-- menu 教师与学生 -->
-		<div v-if="currentUser[0].role === '2' || currentUser[0].role === '3'" class="leftBarBox">
+		<div v-if="currentUser[0].role === '2'" class="leftBarBox">
 			<a-menu
 				mode="inline"
 				theme="dark"
@@ -51,13 +51,13 @@
 						</span>
 					</a-menu-item>
 				</a-sub-menu>
-				<a-menu-item key="17"
+				<!-- <a-menu-item key="17"
 					@click="handleMenuChange('17', '0', '专业计划', 'PlanDetail', 'icon-jihua')">
 					<span class="title">
 						<i class="iconfont icon-jihua paddingRigTwenty icon-eighteen" />
 						专业计划
 					</span>
-				</a-menu-item>
+				</a-menu-item> -->
 			</a-menu>
 		</div>
 		<!-- 管理员 -->
@@ -75,9 +75,19 @@
 						<span class="sub-title" @click="handleMenuChange('9', '0', '人员列表', 'RoleStuDetail', '')">人员列表</span>
 					</a-menu-item>
 				</a-sub-menu>
-				<a-menu-item key="13">
-					<i class="iconfont icon-tongji paddingRigTwenty icon-eighteen" />
-					统计页面
+			</a-menu>
+		</div>
+		<!-- 学生 -->
+		<div v-if="currentUser[0].role === '3'" class="leftBarBox">
+			<a-menu
+				mode="inline"
+				theme="dark"
+				:inlineCollapsed="collapsed">
+				<a-menu-item key="7"
+					@click="handleMenuChange('7', '0', '统计', 'StudentAnalysis', '')">
+					<span class="sub-title">
+						统计
+					</span>
 				</a-menu-item>
 			</a-menu>
 		</div>

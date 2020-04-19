@@ -4,8 +4,8 @@
 		<div class="content-box">
 			<a-spin :spinning="spinning" tip="正在生成模板文件,请等待....">
 				<div class="btn-form">
-					<a-button size="large" @click="getDemand2Info"> <a-icon type="download" />下载指标点与课程关系模板文件</a-button>
-					<div class="uploadCsvContainer" v-if="currentUser[0].role === '2'">
+					<a-button size="large" @click="getDemand2Info" :disabled="disableOfAddCourseDemand"> <a-icon type="download" />下载指标点与课程关系模板文件</a-button>
+					<div class="uploadCsvContainer" v-if="currentUser[0].role === '2' && course">
 						<!-- 导入文件 -->
 						<a-upload
 							name="file"
@@ -13,7 +13,7 @@
 							@change="handleFileChange"
 							action="http://localhost:8091/gacs/excel/quota"
 						>
-						<a-button type="primary" size="large"> <a-icon type="upload" />导入指标点与课程关系文件</a-button>
+						<a-button type="primary" size="large" :disabled="disableOfAddCourseDemand"> <a-icon type="upload" />导入指标点与课程关系文件</a-button>
 						</a-upload>
 					</div>
 				</div>
@@ -25,7 +25,7 @@
 <script>
 	import Header from '@/components/detail/public/Header'
 	import config from '@/api/config.js'
-	import { mapGetters } from 'vuex'
+	import { mapGetters, mapActions } from 'vuex'
 	import RelDemandAndCourseTable from '@/components/detail/reldemandcourse/RelDemandCourseTable'
 	export default {
 		name: 'RelDemandAndCourseDetail',
@@ -41,6 +41,7 @@
 				editClose: '完成',
 				dataSource: [],				// 数据源
 				filterVal: [],				// 列数据
+				isUploadDataBtn: false,		// 上传文件按钮是否可以点击
 			}
 		},
 		computed:{
@@ -50,6 +51,7 @@
 				relDemandAndCourseColumns: 'relDemandAndCourseColumns', // 课程指标点与课程模板文件列
 				relDemandAndCourseData: 'relDemandAndCourseData',	// 课程指标点与课程模板文件数据
 				hasCompletePage: 'hasCompletePage',					// 步骤条已完成页面
+				disableOfAddCourseDemand: 'disableOfAddCourseDemand',	// 按钮状态
 			})
 		},
 		watch:{
@@ -65,6 +67,10 @@
 			}
 		},
 		methods: {
+			...mapActions({
+				setDisableOfAddCourseDemand: 'setDisableOfAddCourseDemand',			// 按钮状态
+			}),
+
 			// 处理文件上传
 			handleFileChange(info){
 				if (info.file.status === 'done') {
@@ -86,10 +92,10 @@
 			},
 
 			/**
-			* Introduction 获得指标点2列表数据
-			* @author 刘莉
-			* @since 1.0
-			*/
+			 * Introduction 获得指标点2列表数据
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			getDemand2Info(){
 				let self = this
 				// 开启loading
@@ -143,10 +149,10 @@
 			},
 
 			/**
-			* Introduction 获取课程列表数据
-			* @author 刘莉
-			* @since 1.0
-			*/
+			 * Introduction 获取课程列表数据
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			getCourseInfo(){
 				let self = this
 				let restData = {
@@ -165,7 +171,10 @@
 								objCourse[ 'index1'] = response.data.data.list[i].courseName
 								self.dataSource.push(objCourse)
 							}
-							self.exportExcel()
+							self.exportExcel();
+
+							// 改变按钮状态
+							self.setDisableOfAddCourseDemand(false);
 						}
 					} else{
 						self.$message.error('模板文件生成失败')
@@ -189,6 +198,11 @@
 
 			formatJson(filterVal, jsonData) {
 				return jsonData.map(v => filterVal.map(j => v[j]));
+			},
+
+			// 接收父组件事件，更新按钮状态值
+			setUploadBtnStatus (moda) {
+				this.isUploadDataBtn = moda
 			},
 		}
 		

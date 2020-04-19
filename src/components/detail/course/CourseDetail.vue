@@ -3,6 +3,7 @@
 		<div class="content-box">
 			<a-spin :spinning="spinning" tip="正在生成模板文件,请等待....">
 				<div class="btn-form">
+					<a-button @click="openAddCourse" size="large"><a-icon type="plus" />添加课程</a-button>
 					<a-button @click="exportExcel" size="large"><a-icon type="download" />下载课程信息模板</a-button>
 					<div class="uploadContainer">
 						<!-- 导入文件 -->
@@ -17,16 +18,22 @@
 					</div>	
 				</div>
 				<!-- 搜索按钮 -->
-				<Header style="padding:10px 0px 0px 10px;margin-top: 0px;" :placeData="placeData"></Header>
+				<Header style="padding:10px 0px 0px 10px;margin-top: 0px;" :placeData="placeData" type="course" @setSearchCourseData="setSearchCourseData"></Header>
 				<!-- 列表 -->
 				<table-list 
 					:title="tabTitle"
 					:com="currentCom"
 					:isSuccess="isSuccess"
+					:tablists="dataSource"
 					style="padding:10px 0px 0px 10px;">
 				</table-list>
 			</a-spin>
 		</div>
+		<a-modal 
+			:visible="isShowAddCourse"
+			@cancel="handleCancel">
+			<add-course @closeModal="handleCancel"></add-course>
+		</a-modal>
 	</div>
 </template>
 <script>
@@ -35,8 +42,10 @@
 	import FormTable from '@/components/detail/public/FormTable'
 	import TableList from '@/components/detail/public/TableList'
 	import StepDetail from '@/components/detail/public/StepDetail'
+	import AddCourse from '@/components/detail/course/AddCourse'
 	import { mapGetters } from 'vuex'
 	import config from '@/api/config.js'
+	import tools from '@/public/tools/tools'
 	export default {
 		name: 'CourseDetail',
 		components: {
@@ -44,7 +53,8 @@
 			FormWork,
 			FormTable,
 			TableList,
-			StepDetail
+			StepDetail,
+			AddCourse
 		},
 		data(){
 			return {
@@ -92,6 +102,7 @@
 				responseData: {},			// 接口返回数据
 				placeData: '请输入课程名称', 
 				currentCom: 'CourseDetail',	// 当前组件名称
+				isShowAddCourse: false,		// 弹出添加课程模态框
 			}
 		},
 		computed:{
@@ -109,22 +120,19 @@
 			// this.getCourseInfoList()
 		},
 		methods: {
+
+			/**
+			 * Introduction 生成模板文件
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			exportExcel(){
 				require.ensure([], () => {
 					const { export_json_to_excel } = require("../../../excel/Export2Excel");
  
 				    const tHeader = ['课程ID', '课程名', '学分', '学期', '平均分', '总分制']; //将对应的属性名转换成中文
 					const filterVal = ['courseId', 'courseName', 'courseCreit', 'trem', 'total', 'average']　　
-					// const list =[
-					// 	{
-					// 		courseId:'课程ID',
-					// 		courseName: '课程名',
-					// 		courseCreit: '学分',
-					// 		trem:'学期',
-					// 		total: '总分制',
-					// 		average: '平均分'
-					// 	},
-					// ]
+					
 					const data = []
 				    export_json_to_excel(tHeader, data, '课程信息模板');　
 				});
@@ -133,7 +141,12 @@
 			formatJson(filterVal, jsonData) {
 				return jsonData.map(v => filterVal.map(j => v[j]));
 			},
-			// 处理文件上传
+
+			/**
+			 * Introduction 处理文件上传
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			handleFileChange(info){
 				this.spinning = true;
 				if (info.file.status === 'done') {
@@ -152,11 +165,11 @@
 			
 
 			/**
-			* Introduction 分页，页数change事件
-			* @author 刘莉
-			* @since 1.0
-			* @param {page} 当前点击的page
-			*/
+			 * Introduction 分页，页数change事件
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {page} 当前点击的page
+			 */
 			changePage(page){
 				const coursePagination = {...this.coursePagination}
 				coursePagination.page = page
@@ -166,24 +179,52 @@
 			},
 
 			/**
-			* Introduction 子组件接收的loading状态 
-			* @author 刘莉
-			* @since 1.0
-			* @param {flag} false：关闭，true开启
-			*/
+			 * Introduction 子组件接收的loading状态 
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {flag} false：关闭，true开启
+			 */
 			getTableLoading(flag){
 				this.tableListSpinning = flag
 			},
 
 			/**
-			* Introduction 向父组件传递当前击中的key
-			* @author 刘莉
-			* @since 1.0
-			* @param {key} 从StepDetail接收的key
-			*/
+			 * Introduction 向父组件传递当前击中的key
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {key} 从StepDetail接收的key
+			 */
 			setActiveKey(key){
 				// 设置当前击中key
 				this.$emit('activeKey', key+'')
+			},
+
+			/**
+			 * Introduction 弹出添加课程模态框
+			 * @author 刘莉
+			 * @since 1.0
+			 */
+			openAddCourse () {
+				this.isShowAddCourse = true
+			},
+
+			/**
+			* Introduction 从子组件接收按课程名模糊查询的列表值
+			* @author 刘莉
+			* @since 1.0
+			* @param {data} 从header接收的data
+			*/
+			setSearchCourseData (data) {
+				this.dataSource = tools.deepClone(data)
+			},
+			
+			/**
+			 * Introduction 关闭模态框
+			 * @author 刘莉
+			 * @since 1.0
+			 */
+			handleCancel () {
+				this.isShowAddCourse = false;
 			}
 		}
 	}

@@ -5,6 +5,7 @@
 		<div class="content-box">
 			<a-spin :spinning="spinning" tip="正在生成模板文件,请等待....">
 				<div class="btn-form">
+					<a-button @click="openAddUser" size="large"><a-icon type="plus" />添加学生</a-button>
 					<a-button @click="exportExcel" size="large"><a-icon type="download" />下载学生信息模板</a-button>
 					<div class="uploadContainer">
 						<!-- 导入文件 -->
@@ -18,16 +19,22 @@
 						</a-upload>
 					</div>	
 				</div>
-				<Header style="padding:10px 0px 0px 10px; margin-top: 0" :placeData="placeData"></Header>
+				<Header style="padding:10px 0px 0px 10px; margin-top: 0" :placeData="placeData" type="student" @setSearchStudentData="setSearchStudentData"></Header>
 				<!-- 列表 -->
 				<table-list 
 					:title="tabTitle"
 					:com="currentCom"
 					:isSuccess="isSuccess"
+					:tablists="dataSource"
 					style="padding:10px 0px 0px 10px;"
 				></table-list>
 			</a-spin>
 		</div>
+
+		<!-- 添加用户 -->
+		<a-drawer :visible="isShowAddUser" placement="top" title="增加学生" @close="closeAddUser">
+			<add-user @closeAddUser="closeAddUser"></add-user>
+		</a-drawer>
 		
 	</div>
 </template>
@@ -39,6 +46,8 @@
 	import FormTable from '@/components/detail/public/FormTable'
 	import TableList from '@/components/detail/public/TableList'
 	import StepDetail from '@/components/detail/public/StepDetail'
+	import AddUser from '@/components/detail/user/AddUser'
+	import tools from '@/public/tools/tools'
 	export default {
 		name: 'StudentDetailList',
 		components: {
@@ -46,7 +55,8 @@
 			FormWork,
 			FormTable,
 			TableList,
-			StepDetail
+			StepDetail,
+			AddUser
 		},
 		data(){
 			return {
@@ -58,7 +68,8 @@
 				disablefBtn: true,
 				currentCom: 'StudentGrade',	// 当前组件名称
 				placeData: '输入学号',
-				isSuccess: false
+				isSuccess: false,
+				isShowAddUser: false
 			}
 		},
 		computed: {
@@ -110,6 +121,7 @@
 			},
 			// 处理文件上传
 			handleFileChange(info){
+				console.log("rrrrr")
 				if (info.file.status === 'done') {
 					this.isSuccess = true
 					this.$message.success('上传成功');
@@ -138,6 +150,28 @@
 			setActiveKey(key){
 				// 设置当前击中key
 				this.$emit('activeKey', key+'')
+			},
+
+			/**
+			* Introduction 弹出添加用户
+			* @author 刘莉
+			* @since 1.0
+			*/
+			openAddUser() {
+				this.isShowAddUser = true
+			},
+
+			setSearchStudentData(data) {
+				this.dataSource = tools.deepClone(data)
+			},
+
+			/**
+			* Introduction 关闭添加用户
+			* @author 刘莉
+			* @since 1.0
+			*/
+			closeAddUser() {
+				this.isShowAddUser = false
 			}
 		}
 	}

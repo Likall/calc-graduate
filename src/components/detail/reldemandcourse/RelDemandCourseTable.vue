@@ -200,6 +200,9 @@
 							let course = response.data.data.list
 							self.setCourseList(course)
 							self.setCourseDataSource(course)
+							this.$emit('disableOfUploads', false)
+						} else {
+							this.$emit('disableOfUploads', true)
 						}
 					}else {
 						self.$message.error('查询失败')
@@ -217,6 +220,8 @@
 							let responseData = response.data.data
 							//	设置毕业指标点数据源
 							this.setDemandColumnsData(responseData)
+						} else {
+							this.$emit('disableOfUploads', true)
 						}
 					} else {
 						self.$message.error('查询失败')

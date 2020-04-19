@@ -72,7 +72,12 @@
 				setDemandList: 'demand/setDemandList',		// 设置毕业要求列表
 				setOriginDataSource: 'demand/setOriginDataSource', // 设置毕业要求数据源
 			}),
-			// 生成excel
+
+			/**
+			 * Introduction 生成excel
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			exportSpecialExcel() {
 				var aoa = [
 					['一级毕业要求', '二级毕业要求',null, null], // 特别注意合并的地方后面预留2个null
@@ -97,6 +102,7 @@
 				];
 				this.openDownloadDialog(this.sheet2blob(sheet), '毕业指标点模板.xlsx');
 			},
+
 			sheet2blob(sheet, sheetName) {
 				sheetName = sheetName || 'sheet1';
 				var workbook = {
@@ -121,7 +127,12 @@
 				}
 				return blob;
 			},
-			// 下载excel
+
+			/**
+			 * Introduction 下载excel
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			openDownloadDialog(url, saveName)
 			{
 				if(typeof url == 'object' && url instanceof Blob)
@@ -140,7 +151,12 @@
 				}
 				aLink.dispatchEvent(event);
 			},
-			// 处理文件上传
+
+			/**
+			 * Introduction 处理文件上传
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			handleFileChange(info){
 				console.log(info)
 				this.spinning = true;
@@ -158,7 +174,11 @@
 				}
 			},
 
-			// 查询毕业要求列表
+			/**
+			 * Introduction 查询毕业要求列表
+			 * @author 刘莉
+			 * @since 1.0
+			 */
 			getDemandList(){
 				let self = this
 				self.axios.get(config.GET_ALL_DEMAND2_LIST).then(response =>{
@@ -253,27 +273,27 @@
 					}
 				})
 			},
+
 			/**
-			* Introduction 向父组件传递当前击中的key
-			* @author 刘莉
-			* @since 1.0
-			* @param {key} 从StepDetail接收的key
-			*/
+			 * Introduction 向父组件传递当前击中的key
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {key} 从StepDetail接收的key
+			 */
 			setActiveKey(key){
 				// 设置当前击中key
 				this.$emit('activeKey', key+'')
 			},
 
 			/**
-			* Introduction 接收父组件传递过来的值
-			* @author 刘莉
-			* @since 1.0
-			* @param {data} 从demandtablelist接收的数据源 
-			* @param {index} 取消行的下标
-			* @param {indexOfSave} 保存的下标
-			*/
+			 * Introduction 接收父组件传递过来的值
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {data} 从demandtablelist接收的数据源 
+			 * @param {index} 取消行的下标
+			 * @param {indexOfSave} 保存的下标
+			 */
 			updateDemand(data, index, indexOfSave) {
-				console.log(data,index, indexOfSave)
 				// 取消修改，还原
 				if (index !=='' && index !== null && index !== 'undefined' && typeof index !== 'undefined') {
 					this.changeDataSource = [...data]
@@ -289,11 +309,11 @@
 			},
 
 			/**
-			* Introduction 更新指标点
-			* @author 刘莉
-			* @since 1.0
-			* @param {index} 更新的下标
-			*/
+			 * Introduction 更新指标点
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {index} 更新的下标
+			 */
 			updateDemandsTotal(index, data) {
 				let self = this
 				// 一级指标点ID
@@ -324,11 +344,11 @@
 			},
 
 			/**
-			* Introduction 设置参数
-			* @author 刘莉
-			* @since 1.0
-			* @param {index} 下标
-			*/
+			 * Introduction 设置参数
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {index} 下标
+			 */
 			setDemandResData(index) {
 				// 设置二级指标点
 				let array = []

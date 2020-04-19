@@ -69,7 +69,15 @@
 		mounted() {
 		},
 		methods: {
-			// 处理输入框事件更改事件
+
+			/**
+			 * Introduction 处理输入框事件更改事件
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {value} 项
+			 * @param {key} key值
+			 * @param {columns} 列值
+			 */
 			handleChange(value, key, column) {
 				// 设置数据源
 				const newData = [...this.dataSource];
@@ -82,8 +90,12 @@
 			},
 
 
-
-			// 点击编辑按钮事件
+			/**
+			 * Introduction 点击编辑按钮事件
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {index} 下标
+			 */
 			edit(index) {
 				// 编辑时 -> 存储未更改数据，为取消事件返回原数据
 				const newData = [...this.dataSource];
@@ -96,7 +108,12 @@
 				}
 			},
 
-			// 编辑后的保存事件
+			/**
+			 * Introduction 编辑后的保存事件
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {index} 下标
+			 */
 			save(index) {
 				const newData = [...this.dataSource];
 				// 保存后，编辑该行的数据清除
@@ -109,7 +126,12 @@
 				}
 			},
 
-			// 编辑后取消修改事件
+			/**
+			 * Introduction 编辑后取消修改事件
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {index} 下标
+			 */
 			cancel(index) {
 				const newData = [...this.dataSource];
 				const target = newData.filter((item,i) => index === i);
@@ -121,7 +143,12 @@
 				}
 			},
 
-			// 删除该行数据
+			/**
+			 * Introduction 删除该行数据
+			 * @author 刘莉
+			 * @since 1.0
+			 * @param {index} 下标
+			 */
 			deleteRow(index){
 				let newData = [...this.dataSource]
 				let target = newData.filter((item,i) => index === i)
