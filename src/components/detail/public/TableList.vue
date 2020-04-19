@@ -6,7 +6,14 @@
 				<h3>{{title}}</h3>
 			</div>
 			<div class="course-table-box">
-				<a-table :columns="columns" :dataSource="dataSource" bordered :pagination="Pagination" @change="handleTableChange">
+				<a-table 
+				:columns="columns" 
+				:dataSource="dataSource" 
+				bordered 
+				:pagination="Pagination" 
+				@change="handleTableChange"
+				size="small"
+				:rowKey="record => record.key">
 					<template
 						v-for="col in colData"
 						:slot="col"
@@ -30,9 +37,9 @@
 							</span>
 							<span v-else>
 								<a-button size="small" type="primary" @click="() => edit(index)">编辑</a-button>
-								<a-popconfirm title="确认删除?" @confirm="() => deleteRow(index)">
+								<!-- <a-popconfirm title="确认删除?" @confirm="() => deleteRow(index, record)">
 									<a-button size="small">删除</a-button>
-								</a-popconfirm>
+								</a-popconfirm> -->
 								
 							</span>
 						</div>
@@ -45,12 +52,14 @@
 <script>
 	import config from '@/api/config.js'
 	import { mapGetters, mapActions } from 'vuex'
+	import tools from '@/public/tools/tools'
 	export default {
 		name: 'TableList',
 		props: [
 			'title',
 			'com',
-			'isSuccess'
+			'isSuccess',
+			'tablists'
 		],
 		data(){
 			return {
@@ -165,6 +174,18 @@
 					this.columns = this.studentColumns
 					this.colData = ['stuId', 'stuName', 'stuMale']
 				}
+			},
+
+			tablists(New) {
+				// 设置课程列表数据源
+				if (this.com === 'CourseDetail') {
+					this.dataSource = tools.deepClone(this.tablists)
+					this.Pagination = tools.deepClone({current: 1, total: this.tablists.length, pageSize: this.tablists.length, pageNum: 1, pages: 1})
+					
+				} else if (this.com === 'StudentGrade') {
+					this.dataSource = tools.deepClone(this.tablists)
+					this.Pagination = tools.deepClone({current: 1, total: this.tablists.length, pageSize: this.tablists.length, pageNum: 1, pages: 1})
+				}
 			}
 		},
 		mounted(){
@@ -278,6 +299,7 @@
 				this.oldTempRowData = {}
 				const target = newData.filter((item,i) => index === i);
 				if (target) {
+					// 更新数据
 					this.updateData()
 					delete target[0].editable;
 					this.dataSource = newData;
@@ -288,29 +310,47 @@
 			updateData(){
 				let self = this
 				let restData
+				self.tableListSpinning = true
+				// 更新课程信息
 				if (this.com === 'CourseDetail') {
-					// restDate = {
-					// 	courseId: 
-					// 	courseName: 
-						
-					// }
+					restData = {
+						courseAverage: this.currentRowData.courseAverage,
+						courseCredit: this.currentRowData.courseCredit,
+						courseName: this.currentRowData.courseName,
+						courseTerm: this.currentRowData.courseTerm,
+						courseTotalGrade: this.currentRowData.courseTotalGrade,
+						courseId: this.currentRowData.courseId
+					}
+
+					self.axios.post(config.UPDATE_COURSE_INFO, restData).then(response => {
+						if (response.data.code === '200') {
+							this.$message.success(response.data.msg)
+						} else {
+							this.$message.error(response.data.msg)
+						}
+
+						this.tableListSpinning = false
+					})
 				}
+				// 更新学生信息
 				else if (this.com === 'StudentGrade'){
 					restData = {
 						stuId: this.currentRowData.stuId,
 						stuName: this.currentRowData.stuName,
 						stuMale: this.currentRowData.stuMale
 					}
+
 					self.axios.post(config.UPDATE_STUDENT, restData).then(response => {
 						if (response.data.code === '200') {
 							this.$message.success(response.data.msg)
 						} else {
 							this.$message.error(response.data.msg)
 						}
-						// 开启loading
+
+						this.tableListSpinning = false
 					}) 
 				}
-				this.tableListSpinning = false
+				
 			},
 			// 编辑后取消修改事件
 			cancel(index) {
@@ -322,10 +362,18 @@
 					this.dataSource = newData;
 				}
 			},
-
-			deleteRow(index){
+			// 删除这行数据
+			deleteRow(index, record){
+				console.log(index, record)
 				let newData = [...this.dataSource]
 				let target = newData.filter((item,i) => index === i)
+
+				// 删除学生
+				if (this.com === 'StudentGrade') {
+					this.deleteStudent(record)
+				} else if (this.com === 'CourseDetail') {
+
+				}
 				if (target) {
 					// 变换状态
 					delete target.editable
@@ -334,8 +382,17 @@
 				}
 			},
 
-		
-			
+			// 删除学生
+			deleteStudent(record) {
+				let self = this;
+				let resData = {
+					stuId: record.stuId,
+				}
+				self.axios.post(config.DELETE_STUDENT, resData).then(response => {
+					console.log('response')
+				})
+			}
+
 		}
 	}
 </script>

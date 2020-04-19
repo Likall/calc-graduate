@@ -14,6 +14,7 @@
                         v-if="record.editable"
                         style="margin: -5px 0"
                         :value="text"
+                        @change="e => handleChange(e.target.value, record.key, col)"
                     />
                     <template v-else>{{text}}</template>
                 </div>
@@ -53,7 +54,8 @@ export default {
             tableDataSource: [],			// 列表数据源
             scollWidth: '',
             colColumns: [],
-            spinning: false
+            spinning: false,
+            currentRowData: {},			// 当前列表修改值
         }
     },
     computed: {
@@ -113,6 +115,8 @@ export default {
                         self.setStudentList(response.data.data.list)
                         // 设置列数据
                         self.setStudentColumnsData(response.data.data.list)
+                    } else {
+                        this.$emit('disableOfUploads', true)
                     }
                 }else {
                     this.$message.error(response.data.msg)
@@ -200,6 +204,9 @@ export default {
                     if (response.data.data.length > 0) {
                         self.setStudentGradeList(response.data.data)
                         self.setGradeDataSource(response.data.data)
+                        this.$emit('disableOfUploads', false)
+                    } else {
+                        this.$emit('disableOfUploads', true)
                     }
                 } else {
                     this.$message.error(response.data.msg)
@@ -258,8 +265,35 @@ export default {
             // 保存后，编辑该行的数据清除
             this.oldTempRowData = {}
             const target = newData.filter((item,i) => index === i);
+            console.log(target)
             if (target) {
                 delete target[0].editable;
+                let newArray = []
+                let studentArray = []
+                let courseId = ''
+                for (let obj in target[0]) {
+                     if (target[0].hasOwnProperty(obj))
+                        // 排除course和key
+                        if (obj === 'key') {
+                            courseId = target[0][obj]
+                            
+                        } else if(obj !== 'key' && obj !== 'course') {
+                            let tempObj = {
+                                stuId: obj,
+                                courseId: courseId,
+                                courseGrade: target[0][obj]
+                            }
+                            studentArray.push(tempObj)
+                        }
+                }
+                for (let i = 0; i < studentArray.length; i++) {
+                    studentArray[i].courseId = courseId
+                }
+                newArray.push({
+                    courseId: courseId,
+                    studentCourseList: studentArray
+                })
+                this.updatedGrade(newArray)
                 this.tableDataSource = newData;
             }
         },
@@ -282,6 +316,32 @@ export default {
                 // 变换状态
                 delete target.editable
                 newData.splice(index, 1)
+                this.tableDataSource = newData;
+            }
+        },
+
+        // 更新学生课程成绩
+        updatedGrade (data) {
+            let self = this
+            let restData = data[0]
+            self.axios.post(config.UPDATE_GRADE, restData).then(response =>{
+                // 查询成功
+				if (response.data.code === '200') {
+                    self.$message.success('修改成功')
+                }
+                self.spinning = false
+            })
+        },
+
+        // 处理输入框事件更改事件
+        handleChange(value, key, column) {
+            
+            const newData = [...this.tableDataSource];
+            const target = newData.filter(item => key === item.key)[0];
+            // 1. 设置当前值
+            this.currentRowData = target
+            if (target) {
+                target[column] = value;
                 this.tableDataSource = newData;
             }
         },

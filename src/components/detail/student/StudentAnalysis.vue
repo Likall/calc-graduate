@@ -657,7 +657,7 @@
 			}
 
 			#echarts1 {
-				width: 400px;
+				width: 600px;
 				height: 400px;
 				padding-left: 29px;
     			padding-top: 15px;

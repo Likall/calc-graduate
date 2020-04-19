@@ -5,8 +5,8 @@
 		<div class="content-box">
 			<a-spin :spinning="spinning" tip="正在生成模板文件,请等待....">
 				<div class="btn-form">
-					<a-button @click="getStudentInfo" size="large"><a-icon type="download" />下载课程与学生关系模板</a-button>
-					<div class="uploadContainer">
+					<a-button @click="getStudentInfo" size="large" :disabled="disableOfAddCourseStudent"><a-icon type="download" />下载课程与学生关系模板</a-button>
+					<div class="uploadContainer" >
 						<!-- 导入文件 -->
 						<a-upload
 							name="file"
@@ -14,7 +14,7 @@
 							@change="handleFileChange"
 							action="http://localhost:8091/gacs/excel/grade"
 						>
-						<a-button type="primary" size="large"> <a-icon type="upload" />导入课程与学生关系文件</a-button>
+						<a-button type="primary" size="large" :disabled="disableOfAddCourseStudent" > <a-icon type="upload" />导入课程与学生关系文件</a-button>
 						</a-upload>
 					</div>	
 				</div>
@@ -64,6 +64,7 @@
 				studentData: 'studentData',										// 学生模板文件数据
 				courseList: 'course/courseList',								// 课程列表
 				studentList: 'student/studentList',								// 学生列表
+				disableOfAddCourseStudent: 'disableOfAddCourseStudent',			// 按钮状态
 			})
 		},
 		watch:{
@@ -75,6 +76,7 @@
 				setStudentGradeList: 'student/setStudentGradeList',			// 设置学生成绩列表
 				setCourseList: 'course/setCourseList',						// 设置课程列表
 				setStudentList: 'student/setStudentList',					// 设置学生列表
+				setDisableOfAddCourseStudent: 'setDisableOfAddCourseStudent',	// 设置按钮状态
 			}),
 
 			// 获取课程列表数据
@@ -97,7 +99,9 @@
 								objCourse[ 'index1'] = response.data.data.list[i].courseName
 								this.dataSource.push(objCourse)
 							}
-							this.exportExcel()
+							this.exportExcel();
+							// 按钮可点击
+							self.setDisableOfAddCourseStudent(false);
 						}
 					} else{
 						this.$message.error('模板文件生成失败')
@@ -172,6 +176,11 @@
 					this.$message.error('上传失败');
 				}
 			},
+
+			// 弹出添加学生
+			openAddGrade() {
+				
+			}
 
 			
 		}

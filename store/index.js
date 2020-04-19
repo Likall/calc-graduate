@@ -32,6 +32,8 @@ const state = {
 	demandData: [],								// 毕业要求模板文件数据
 	currentUser: [],							// 登录用户信息
 	hasCompletePage: 0,			// 已经完成的进度条
+	disableOfAddCourseDemand: true,		// 添加课程指标点按钮是否可用
+	disableOfAddCourseStudent: true,	// 添加学生成绩按钮是否可用
 }
 var getters = {
 	leftBarList: state => {
@@ -66,6 +68,14 @@ var getters = {
 	},
 	demandData: state => {
 		return state.demandData
+	},
+
+	disableOfAddCourseDemand: state => {
+		return state.disableOfAddCourseDemand
+	},
+
+	disableOfAddCourseStudent: state => {
+		return state.disableOfAddCourseStudent
 	}
 }
 const actions = {
@@ -138,6 +148,21 @@ const actions = {
 	}, value) => {
 		commit(types.SET_DEMANDDATA, value)
 	},
+
+	setDisableOfAddCourseDemand: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_DISABLEOFADDCOURSEDEMAND, value)
+	},
+
+	setDisableOfAddCourseStudent: ({
+		commit,
+		state
+	}, value) => {
+		commit(types.SET_DISABLEOFADDCOURSESTUDENT, value)
+	},
+
 }
 const mutations = {
 	// [types.SET_TABTITLEITEM](state, value) {
@@ -176,6 +201,12 @@ const mutations = {
 	[types.SET_DEMANDCOLUMNS](state, value) {
 		state.demandColumns = value
 	},
+	[types.SET_DISABLEOFADDCOURSEDEMAND](state, value) {
+		state.disableOfAddCourseDemand = value
+	},
+	[types.SET_DISABLEOFADDCOURSESTUDENT](state, value) {
+		state.disableOfAddCourseStudent = value
+	}
 	
 	
 }

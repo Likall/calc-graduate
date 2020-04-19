@@ -1,82 +1,99 @@
 <template>
 	<div class="addUserContainer">
-		<a-form :form="addUserForm" >
-			<a-form-item v-bind="formItemLayout" label="登录账号" :validate-status="validAccount" hasFeedback>
-				<a-input
-					style="width: 186px" 
-					v-decorator="[
-					'account',
-					{
-						rules: [
-						{
-							required: true,
-							message: '请输入登录账号!',
-						},
-						{
-							validator: validateUserAccount,
-						},
-						],
-					},
-					]"
-				/>
-				<span class="extra">8位数字组成</span>
-			</a-form-item>
-			<a-form-item v-bind="formItemLayout" label="角色" >
-				<a-select  
-					style="width: 186px" 
-					v-decorator="['role', { rules: [{ required: true, message: '请选择角色！' }] }]">
-					<a-select-option value="2">教师</a-select-option>
-					<a-select-option value="3">学生</a-select-option>
-				</a-select>
-			</a-form-item>
-			<a-form-item v-bind="formItemLayout" label="密码" :validate-status="validPsw" hasFeedback>
-				<a-input
-					style="width: 186px" 
-					v-decorator="[
-					'password',
-					{
-						rules: [
-						{
-							required: true,
-							message: '请输入密码!',
-						},
-						{
-							validator: validateToNextPassword,
-						},
-						],
-					},
-					]"
-					type="password"
-				/>
-				<span class="extra">6-16位英文与数字组成</span>
-			</a-form-item>
-			<a-form-item v-bind="formItemLayout" label="确认密码" :validate-status="validConfirmPsw" hasFeedback>
-				<a-input
-					style="width: 186px" 
-					v-decorator="[
-					'confirm',
-					{
-						rules: [
-						{
-							required: true,
-							message: '请输入密码!',
-						},
-						{
-							validator: compareToFirstPassword,
-						},
-						],
-					},
-					]"
-					type="password"
-					@blur="handleConfirmBlur"
-			/>
-			</a-form-item>
-			<a-form-item :wrapper-col="{ span: 12, offset: 15 }">
-				<a-button type="primary" @click="handleSubmit">
-					确定
-				</a-button>
-			</a-form-item>
-		</a-form>
+        <a-spin :spinning="spinning">
+            <a-form :form="addUserForm" class="user-form">
+                <a-row>
+                    <a-col :span="8" class="ant-col-margin">
+                        <a-form-item  label="学号" :validate-status="validAccount" hasFeedback>
+                            <a-input
+                                style="width: 186px" 
+                                v-decorator="[
+                                'account',
+                                {
+                                    rules: [
+                                    {
+                                        required: true,
+                                        message: '请输入学号!',
+                                    },
+                                    {
+                                        validator: validateStuId,
+                                    },
+                                    ],
+                                },
+                                ]"
+                            />
+                            <span class="extra">8位数字组成</span>
+                        </a-form-item>
+                        <a-form-item  label="姓名" >
+                            <a-input
+                                style="width: 186px" 
+                                v-decorator="[
+                                'name',
+                                {
+                                    rules: [
+                                    {
+                                        required: true,
+                                        message: '请输入姓名!',
+                                    },
+                                    ],
+                                },
+                                ]"
+                            />
+                        </a-form-item>
+                        <a-form-item  label="性别" >
+                            <a-radio-group v-decorator="[
+                                'sex',
+                                {
+                                    rules: [
+                                    {
+                                        required: true,
+                                        message: '请选择性别!',
+                                    },
+                                    ],
+                                },
+                                ]">
+                                <a-radio value="0">
+                                    男
+                                </a-radio>
+                                <a-radio value="1">
+                                    女
+                                </a-radio>
+                            </a-radio-group>
+                        </a-form-item>
+                    </a-col>
+                    <a-col :span="12">
+                            <a-table
+                                size="small"
+                                :columns="courseColumns"
+                                :dataSource="dataSource"
+                                :pagination="false"
+                                :scroll="{ y: 400 }" 
+                                bordered>
+
+                                <template slot="courseGrade" slot-scope="text, record, index">
+                                    <a-form-item >
+                                        <a-input-number 
+                                        class="must"
+                                            size="small"
+                                            @change="e => handleGradeChange(index, e)"/>
+                                </a-form-item>
+
+                                </template>
+                            </a-table>
+                    </a-col>
+                </a-row>
+           
+                <a-form-item :wrapper-col="{ span: 12}">
+                    <a-button type="primary" @click="handleSubmit" :disabled="noDoubleClick">
+                        确定
+                    </a-button>
+                    <a-button type="default" style="margin-left: 10px;" @click="closeAddUser">
+                        取消
+                    </a-button>
+                </a-form-item>
+		    </a-form>
+        </a-spin>
+		
 	</div>
 
 	
@@ -84,61 +101,115 @@
 <script>
 	import config from '@/api/config.js'  
     import tools from '@/public/tools/tools'
-	import { mapGetters, mapActions } from 'vuex';
+    import { mapGetters, mapActions } from 'vuex';
+    import AddGrade from '@/components/detail/student/AddGrade'
 	export default {
-		name: 'AddUser',
+        name: 'AddUser',
+        components: {
+            AddGrade,
+        },
 		data() {
 			return {
 				addUserForm: this.$form.createForm(this, { name: 'addUser' }),		// 表单
 				confirmDirty: false,
 				formItemLayout: {
 					labelCol: {
-						xs: { span: 7 },
-						sm: { span: 10 },
+						xs: { span: 24 },
+						sm: { span: 24 },
 						},
 					wrapperCol: {
-						xs: { span: 12 },
-						sm: { span: 12 },
+						xs: { span: 24 },
+						sm: { span: 24 },
 					},
 				},
-				validAccount: '',					// 验证登录账户
-				validPsw: '',						// 验证密码
-				validConfirmPsw: '',				// 验证确认密码
-				userData: [],						// 学生列表
+				validAccount: '',					// 验证学号
+                userData: [],						// 学生列表
+                courseData: [],                     // 课程列表
+                courseColumns: [                    // 课程列数据
+                    {
+                        title: '课程名',
+                        dataIndex: 'courseName',
+                        width: 400,
+                    },
+                    {
+                        title: '成绩',
+                        dataIndex: 'courseGrade',
+                        scopedSlots: { customRender: 'courseGrade' },
+                        width: 200
+                    }
+                ],                  
+                dataSource: [],                     // 数据源
+                gradeData: [],
+                noDoubleClick: false,               // 防止二次点击
+                spinning: false,                    // loading
 			}
 		},
 		computed:{
 			...mapGetters({
 				userList: 'user/userList',				// 用户列表
-				studentList: 'student/studentList',		// 学生列表
+                studentList: 'student/studentList',		// 学生列表
+                courseList: 'course/courseList',		// 课程列表
 			})
 		},
 		mounted() {
-			this.getStudentList()
+            document.getElementsByClassName('ant-drawer-content-wrapper')[0].style.height = '100%'
+            this.checkHasLoadCourseInfo()
 		},
 		methods: {
 			...mapActions({
 				setUserList: 'user/setUserList',		// 设置用户列表
-				setStudentList: 'student/setStudentList',		// 设置学生列表
+                setStudentList: 'student/setStudentList',		// 设置学生列表
+                setCourseList: 'course/setCourseList',		// 设置学生列表
 			}),
 			// 确认事件
 			handleSubmit(e) {
 				e.preventDefault();
 				let self = this
 				self.addUserForm.validateFieldsAndScroll((err, values) => {
+                    console.log(values)
 					if (!err) {
-						let resData = {
-							account: values.account,
-							userPassword: values.password,
-							role: values.role,
-						}
-						self.axios.post(config.ADD_USER, resData).then(response => {
+						
+                        let inputLength = document.getElementsByClassName('ant-input-number-input')
+                        for (let i = 0; i < inputLength.length; i++) {
+                            if (inputLength[i].value == '') {
+                                self.$message.error('信息未填写完整！');
+                                return;
+                            }
+                        }
+                        // 设置课程列表
+                        let gradeList = []
+                        // 禁用按钮
+                        self.noDoubleClick = true
+                        self.spinning = true
+                        for (let i = 0; i < self.dataSource.length; i++) {
+                            gradeList.push({
+                                stuId: values.account,
+                                courseId: self.dataSource[i].key,
+                                courseGrade: self.dataSource[i].courseGrade + ''
+                            })
+                        }
+                        let sex = ''
+                        if (values.sex == '0') {
+                            sex = '男'
+                        } else {
+                            sex = '女'
+                        }
+                        let resData = {
+                            stuId: values.account,
+                            stuName: values.name,
+                            stuMale: sex,
+                            grade: gradeList,
+                        }
+						self.axios.post(config.ADD_STUDENT_GRADE, resData).then(response => {
 							if (response.data.code === '200') {
 								self.$message.success(response.data.msg)
 							}
 							else {
 								self.$message.success(response.data.msg)
-							}
+                            }
+                            // 开启按钮
+                            self.noDoubleClick = false
+                            self.spinning = false
 						})
 					}
 				});
@@ -149,33 +220,6 @@
 				this.confirmDirty = this.confirmDirty || !!value;
 			},
 
-			// 获取学生信息
-				getStudentList() {
-					let self = this
-					let restData = {
-						"pageNum": 0,
-						"pageSize": 0
-					}
-					let tempStudentArray = tools.deepClone(self.studentList)
-					// 无数据
-					if(tempStudentArray.length == 0){
-						self.axios.post(config.GET_ALL_STUDENT_LIST, restData).then(response =>{
-							// 查询成功
-							if (response.data.code === '200'){
-								// 有数据
-								if (response.data.data.total > 0){
-									// 设置选中的值
-									self.setStudentList(response.data.data.list)
-									self.userData = response.data.data.list
-								}
-							}
-						})
-					}
-					// 有数据
-					else {
-						self.userData = tempStudentArray
-					}
-				},
 			// 校验密码
 			compareToFirstPassword(rule, value, callback) {
 				const form = this.addUserForm;
@@ -217,8 +261,8 @@
 				callback();
 			},
 
-			// 验证登录账户
-			validateUserAccount(rule, value, callback){
+			// 验证学号
+			validateStuId(rule, value, callback){
 				const form = this.addUserForm
 				if(value){
 					// 长度不符合
@@ -237,9 +281,90 @@
 					this.validAccount = ''
 				}
 				callback();
-			}
+            },
+            
+            /**
+            * Introduction 判断是否已加载课程列表
+            * @author 刘莉
+            * @since 1.0
+            */
+            checkHasLoadCourseInfo(){
+                let exsist = tools.deepClone(this.courseList)
+                if (exsist.length <= 0) {
+                    this.getCourseInfo()
+                } else {
+                    this.courseData = exsist
+                    this.setCourseColumns()
+                }
+            },
 
-		}
+            // 获取列表数据
+            getCourseInfo(){
+                let self = this
+                let restData = {
+                    "pageNum": 0,
+                    "pageSize": 0,
+                }
+                self.spinning = true
+                self.axios.post(config.GET_ALL_COURSE_LIST, restData).then(response =>{
+                    // 查询成功
+                    if (response.data.code === '200'){
+                        // 有数据
+                        if (response.data.data.total > 0){
+                            // 设置课程列表
+                            let course = response.data.data.list
+                            self.setCourseList(course)
+                            self.courseData = tools.deepClone(self.courseList)
+                            self.setCourseColumns()
+                        }
+                    }else {
+                        self.$message.error('查询失败')
+                    }
+                    self.spinning = false
+                })
+            },
+
+            // 设置列数据
+            setCourseColumns() {
+                let obj
+                for (let i = 0; i < this.courseData.length; i++) {
+                    this.dataSource.push({
+                        key: this.courseData[i].courseId,
+                        courseName: this.courseData[i].courseName
+                    })
+                    
+                }
+            },
+            // 校验输入的
+            handleGradeChange(index, value) {
+                console.log(value)
+                this.dataSource[index].courseGrade = value
+                
+            },
+
+            /**
+             * Introduction 初始化样式
+             *
+             * @author 刘莉
+             */
+            initStyle() {
+                let must = document.getElementsByClassName("must")
+                for (let i = 0; i < must.length; i++) {
+                    let mustLable = must[i].children[0].children[0];
+                    mustLable.className = 'ant-form-item-required';
+                }
+            },
+
+            // 关闭滑动框
+            closeAddUser() {
+                // 触发父组件事件，关闭drawer
+                this.$emit('closeAddUser')
+            }
+
+        },
+
+        
+
 		
 	}
 </script>
@@ -271,8 +396,47 @@
 	}
 
 	/deep/ .ant-form-item-children{
-		width: 190px;
     	display: inline-block
+    }
+
+    .user-form {
+		width: 100%;
+		height: 100%;
 	}
+    
+    /deep/ .ant-form-item {
+        margin-bottom: 2px;
+    }
+
+    /deep/ .ant-drawer-body {
+        padding: 24px 0px;
+    }
+
+    /deep/ .ant-table-row {
+        /deep/ td {
+            padding: 4px 8px !important;
+        }
+    }
+
+    /deep/ .ant-form-item-control {
+        line-height: 20px;
+    }
+
+    /deep/ .ant-form-item-children-icon {
+        left: 158px;
+    }
+
+    /deep/ .ant-table {
+        .ant-form-item-children::before {
+            display: inline-block;
+            color: #f5222d;
+            font-size: 14px;
+            margin-right: 4px;
+            font-family: SimSun, sans-serif;
+            line-height: 1px;
+            content: '*';
+        }
+    }
+
 }
 </style>
